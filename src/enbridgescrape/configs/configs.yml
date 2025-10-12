@@ -1,0 +1,54 @@
+AG:
+  - OA
+  - OC
+BGS:
+  - OA
+  - SC
+BSP:
+  - OA
+  - OC
+EG:
+  - OA
+  - SC
+ET:
+  - OA
+  - OC
+  - SC
+GB:
+  - OA
+  - OC
+GPL:
+  - OA
+MCGP:
+  - OA
+  - OC
+MNUS:
+  - OA
+  - OC
+NPC:
+  - OA
+  - OC
+NXUS:
+  - OA
+  - OC
+SESH:
+  - OA
+  - OC
+SG:
+  - OA
+  - SC
+SR:
+  - OA
+  - SC
+STT:
+  - OA
+  - OC
+TE:
+  - OA
+  - OC
+  - SC
+TPGS:
+  - OA
+  - SC
+VCP:
+  - OA

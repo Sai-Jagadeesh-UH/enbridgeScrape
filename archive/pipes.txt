@@ -1,0 +1,66 @@
+Algonquin (AGT)
+Bobcat Gas Storage (BGS)
+BIG Pipeline (BIG)
+Big Sandy Pipeline (BSP)
+MHP Egan (EHP)
+East Tennessee (ETNG)
+Garden Banks (GB)
+Generation Pipeline (GPL)
+Mississippi Canyon (MCGP)
+MHP Moss Bluff (MBHP)
+Maritimes & Northeast Canada (MCA)
+Maritimes & Northeast U.S. (MUS)
+Manta Ray Offshore Gathering Company (MR)
+Nautilus Pipeline Company (NPC)
+NEXUS ULC (NXCA)
+NEXUS U.S. (NXUS)
+Southeast Supply Header (SESH)
+Saltville (SGSC)
+Steckman Ridge (SR)
+Sabal Trail (STT)
+Texas Eastern (TE)
+Tres Palacios Gas Storage LLC (TPGS)
+Valley Crossing Pipeline (VCP)
+Westcoast Energy (WE)
+Walker Ridge Gathering System (WRGS)
+
+
+
+
+pipeNameList = 'Algonquin|Bobcat Gas Storage|BIG Pipeline|Big Sandy Pipeline|MHP Egan|East Tennessee|Garden Banks|Generation  Pipeline|Mississippi Canyon|MHP Moss Bluff|Maritimes & Northeast Canada|Maritimes & Northeast U.S.|Manta Ray Offshore Gathering Company|Nautilus Pipeline Company|NEXUS ULC|NEXUS U.S.|Southeast Supply Header|Saltville|Steckman Ridge|Sabal Trail|Texas Eastern|Tres Palacios Gas Storage LLC|Valley Crossing Pipeline|Westcoast Energy|Walker Ridge Gathering System |'
+pipeLegalCode = 'AG|BGS|BIG|BSP|EG|ET|GB|GPL|MCGP|MB|MNCA|MNUS|MR|NPC|NXCA|NXUS|SESH|SG|SR|STT|TE|TPGS|VCP|WE|WRGS|'
+
+
+
+Storage capacity
+BGS
+EG
+SG
+SR
+TPGS
+
+
+
+
+Both
+ET
+TE - different
+
+
+
+
+no Op Cap
+BIG
+MB
+MNCA
+MR
+NXCA
+WE
+WRGS
+
+
+
+
+Nothing
+GPL
+VCP

@@ -30,7 +30,7 @@ async def scrape_OA(page, iframe = None):
 
     download = await download_info.value
 
-    await download.save_as("./downloads/OA/" + download.suggested_filename)
+    await download.save_as("../../downloads/OA/" + download.suggested_filename)
 
 
 
@@ -51,7 +51,7 @@ async def scrape_OC(page, iframe = None):
 
         download = await download_info.value
 
-        await download.save_as("./downloads/OC/" + download.suggested_filename.replace('_OA_','_OC_'))
+        await download.save_as("../../downloads/OC/" + download.suggested_filename.replace('_OA_','_OC_'))
 
 
     else:
@@ -65,7 +65,7 @@ async def scrape_OC(page, iframe = None):
 
         download = await download_info.value
 
-        await download.save_as("./downloads/OC/" + download.suggested_filename.replace('_OA_','_OC_'))
+        await download.save_as("../../downloads/OC/" + download.suggested_filename.replace('_OA_','_OC_'))
 
 
 

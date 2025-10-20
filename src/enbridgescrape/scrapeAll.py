@@ -4,8 +4,6 @@ from datetime import datetime
 
 from playwright.async_api import Playwright
 
-
-from enbridgescrape.configs import pipeConfigs
 from enbridgescrape.OprAvail import scrape_OA
 from enbridgescrape.OprCap import scrape_OC
 from enbridgescrape.StorCap import scrape_SC
@@ -22,8 +20,11 @@ async def run(
     browser = await chromium.launch(headless=headLess, slow_mo=100)
 
     try:
+        raise ValueError
         async with await browser.new_context() as context:
             page = await context.new_page()
+
+            # page.go_back()
 
             start_time = time.perf_counter()
 
@@ -33,12 +34,16 @@ async def run(
 
             await scrape_OA(page, scrapeDate=scrapeDate)
 
-            if "SC" in pipeConfigs[pipeCode]:
+            strg_cap = page.get_by_role('link', name="Storage Capacity Posting")
+
+            op_cap = page.get_by_text("Operational Capacity Maps")
+
+            if strg_cap:
                 await scrape_SC(page)
                 # print('going back ...........................')
-                await page.go_back()
+                # await page.go_back()
 
-            if "OC" in pipeConfigs[pipeCode]:
+            if op_cap:
                 await scrape_OC(page)
 
     except Exception as e:

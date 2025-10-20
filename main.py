@@ -14,7 +14,8 @@ async def main():
     start_all_time = time.perf_counter()
     async with async_playwright() as playwright:
         for pipe in pipeConfigs:
-        # for pipe in ["AG"]:
+        # for pipe in ["AG","BGS", "ET", "TE"]:
+        # for pipe in ["TE"]:
             try:
                 print(f"scraping {pipe}-{pipeConfigs[pipe]}")
                 await run(

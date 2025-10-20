@@ -44,4 +44,4 @@ async def scrape_OA(page, iframe=None, scrapeDate: datetime = datetime.now()):
 
     download = await download_info.value
 
-    await download.save_as("../../downloads/OA/" + download.suggested_filename)
+    await download.save_as("./downloads/OA/" + download.suggested_filename)

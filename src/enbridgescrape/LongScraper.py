@@ -5,7 +5,7 @@ from enbridgescrape.OprAvail import scrape_OA
 from enbridgescrape.OprCap import scrape_OC
 from enbridgescrape.StorCap import scrape_SC
 
-from enbridgescrape.configs import pipeConfigs
+# from enbridgescrape.configs import pipeConfigs
 
 
 async def scrape_long(browser, pipeCode: str, scrapeDate: datetime = datetime.now()):
@@ -26,13 +26,20 @@ async def scrape_long(browser, pipeCode: str, scrapeDate: datetime = datetime.no
             # if ('OA' in pipeConfigs[pipeCode]):
             await scrape_OA(page=page, iframe=iframe_locator, scrapeDate=scrapeDate)
 
-            if "SC" in pipeConfigs[pipeCode]:
-                await scrape_SC(page=page, iframe=iframe_locator)
-                # print("going back ..........................")
-                await page.go_back()
+            strg_cap = iframe_locator.get_by_role('link', name="Storage Capacity Posting")
 
-            if "OC" in pipeConfigs[pipeCode]:
-                await scrape_OC(page=page, iframe=iframe_locator)
+            op_cap = iframe_locator.get_by_text("Operational Capacity Maps")
+
+            if op_cap:
+                await scrape_OC(mainpage=page, iframe=iframe_locator)
+
+                
+            if strg_cap:
+                await scrape_SC(mainpage=page, iframe=iframe_locator)
+                # print("going back ..........................")
+                # await page.go_back()
+
+
 
     except Exception as e:
         print(f"scraping failed for {pipeCode} {e}")

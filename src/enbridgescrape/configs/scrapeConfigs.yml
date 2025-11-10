@@ -1,5 +1,5 @@
-OA: 
-  - AG 
+OA:
+  - AG
   - BGS
   - BSP
   - EG
@@ -17,8 +17,8 @@ OA:
   - TE
   - TPGS
   - VCP
-  
-'OC':
+
+"OC":
   - AG
   - BGS
   - BSP
@@ -44,4 +44,3 @@ SC:
   - SR
   - TE
   - TPGS
-

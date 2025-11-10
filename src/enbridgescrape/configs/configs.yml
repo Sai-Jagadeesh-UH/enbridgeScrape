@@ -1,19 +1,20 @@
 AG:
   - OA
   - OC
+  - NN
 BGS:
   - OA
-  - SC
+
 BSP:
   - OA
   - OC
 EG:
   - OA
-  - SC
+
 ET:
   - OA
   - OC
-  - SC
+
 GB:
   - OA
   - OC
@@ -36,19 +37,23 @@ SESH:
   - OC
 SG:
   - OA
-  - SC
+
 SR:
   - OA
-  - SC
+
 STT:
   - OA
   - OC
 TE:
   - OA
   - OC
-  - SC
+  - NN
+
 TPGS:
   - OA
-  - SC
+
 VCP:
   - OA
+
+WE:
+  - OC

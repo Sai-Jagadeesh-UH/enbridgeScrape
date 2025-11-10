@@ -1,64 +1,102 @@
 import time
 
-async def scrape_OC(mainpage, iframe=None):
-    print(f"entered OC..........")
+from datetime import datetime, timedelta
 
-    if iframe is None:
-        frame = page = mainpage
-    else:
-        frame = iframe
-        page = mainpage
+from .utils import paths, error_detailed
 
-    div_items = (
-            frame.get_by_text("Operational Capacity Maps")
-                .locator("xpath=./following-sibling::div")
-                .get_by_role("link")
+
+ocap_downloads_path = paths.downloads / 'OC'
+ocap_downloads_path.mkdir(exist_ok=True, parents=True)
+
+
+async def refreshDump(mainpage, getByText, scrape_date=None):
+    try:
+        await mainpage.reload()
+
+        await mainpage.locator("li#Capacity.dropdown.sidebar-menu-item").click()
+
+        await mainpage.get_by_role("link", name="Operationally Available").click()
+
+        iframe_locator = mainpage.frame_locator("#ContentPaneIframe")
+
+        date_box = (
+            iframe_locator.get_by_text("Gas Date: ")
+            .locator("xpath=./following-sibling::div")
+            .get_by_role("textbox")
+            .nth(0)
         )
 
-    count = await div_items.count()
+        target_date = scrape_date if scrape_date else (
+            datetime.now() - timedelta(days=2))
 
-    print(count)
+        # print(f"{target_date=} - {scrape_date=}")
 
-    # Loop through each child element
-    for i in range(count):
-        print(i)
+        await date_box.fill("")
+        for i in range(10):
+            await mainpage.keyboard.press("Backspace", delay=100)
 
-        child_element = div_items.nth(i)
+        await date_box.fill((target_date).strftime("%m/%d/%Y"))
 
-        if iframe is None:
-            # print("in page")
-            async with page.expect_navigation():
-                await child_element.click()     
-        else:
-            # print("in frame")
-            await child_element.click()
+        await mainpage.keyboard.press("Enter")
 
-        async with page.expect_download() as download_info:
-            await frame.get_by_text("Download Csv").click()
+        child_element = iframe_locator.get_by_role(
+            "link").get_by_text(getByText)
 
+        await child_element.highlight()
+
+        await child_element.click()
+
+        async with mainpage.expect_download() as download_info:
+            await iframe_locator.get_by_text("Download Csv").click()
 
         download = await download_info.value
 
-        await download.save_as(
-            f"./downloads/OC/F{i}_{download.suggested_filename}".replace("_OA_", "_OC_")
+        await download.save_as(ocap_downloads_path / download.suggested_filename.replace('_OA_', f'_OC-{getByText}_'))
+        # print(f"->OC-{getByText}")
+        time.sleep(1)
+    except Exception as e:
+        print(f"Failed ->OC-{getByText}")
+        # print(error_detailed(e))
+
+
+async def scrape_OC(mainpage, iframe=None, scrape_date=None):
+
+    try:
+
+        div_items = (
+            mainpage.get_by_text("Operational Capacity Maps")
+            .locator("xpath=./following-sibling::div")
+            .get_by_role("link")
         )
 
-        time.sleep(1)
+        textList = await div_items.all_text_contents()
+        # print(textList)
 
         if iframe is None:
-            # print("in page")
-            async with page.expect_navigation():
-                await page.go_back()
+            for count, i in enumerate(textList, start=1):
+                child_element = mainpage.get_by_role("link").get_by_text(i)
+
+                await child_element.highlight()
+                time.sleep(1)
+
+                async with mainpage.expect_navigation():
+                    await child_element.click()
+
+                async with mainpage.expect_download() as download_info:
+                    await mainpage.get_by_text("Download Csv").click()
+
+                download = await download_info.value
+
+                await download.save_as(ocap_downloads_path / download.suggested_filename.replace('_OA_', f'_OC{count}_'))
+                print(f"->OC{i}", end="\t")
+                time.sleep(1)
+
+                async with mainpage.expect_navigation():
+                    await mainpage.go_back()
         else:
-            # print("in frame")
-            # await page.keyboard.press("Alt+ArrowLeft")
+            for eleText in textList:
+                await refreshDump(mainpage=mainpage, getByText=eleText, scrape_date=scrape_date)
+                time.sleep(1)
 
-            try:
-                await page.go_back(timeout=3000)
-            except Exception as e:
-                print("something failed " + str(e))
-        
-
-
-    print("OC success............")
-
+    except Exception as e:
+        print(error_detailed(e))

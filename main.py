@@ -2,34 +2,25 @@ import asyncio
 import time
 from datetime import datetime, timedelta
 
-
-from playwright.async_api import async_playwright
-
-
-from src.enbridgescrape import run
-from src.enbridgescrape.configs import pipeConfigs
+from enbridgescrape import metaDump
+from src.enbridgescrape import runEnbridgeScrape
+from src.enbridgescrape import scrapeHistoric, scrapeToday
+# from src.enbridgescrape import runNN_Scrape
 
 
-async def main():
-    start_all_time = time.perf_counter()
-    async with async_playwright() as playwright:
-        for pipe in pipeConfigs:
-        # for pipe in ["AG","BGS", "ET", "TE"]:
-        # for pipe in ["TE"]:
-            try:
-                print(f"scraping {pipe}-{pipeConfigs[pipe]}")
-                await run(
-                    playwright,
-                    pipeCode=pipe,
-                    headLess=False,
-                    scrapeDate=datetime.now() - timedelta(days=1),
-                )
-            except Exception:
-                continue
+# from playwright.async_api import async_playwright
 
-    print("-" * 50)
-    print(f"Scrape completed in {time.perf_counter() - start_all_time: .2f}s")
+# from src.enbridgescrape import run
+# from src.enbridgescrape.configs import pipeConfigs
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    start_time = time.perf_counter()
+    # asyncio.run(runIterScrape())
+    # asyncio.run(runEnbridgeScrape(True))
+    # asyncio.run(runNN_Scrape(scrape_date=datetime.today() - timedelta(days=6)))
+
+    # asyncio.run(scrapeToday())
+    asyncio.run(scrapeHistoric())
+    metaDump()
+    print(f"{'*'*15} completed in {time.perf_counter()-start_time: .2f}s {'*'*15}")

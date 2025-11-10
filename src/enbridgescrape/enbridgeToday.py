@@ -4,26 +4,28 @@ from datetime import datetime, timedelta
 from src.enbridgescrape import metaDump
 from src.enbridgescrape import runEnbridgeScrape
 from src.enbridgescrape import runNN_Scrape
+from .utils import logger
 
 
 async def scrapeToday():
     start_time = time.perf_counter()
 
     target_date = datetime.today() - timedelta(days=1)
-    print(f"scrapeToday - {target_date=}")
+    logger.info(f"scrapeToday - {target_date=}")
 
     await runEnbridgeScrape(target_date)
 
     target_date = datetime.today()
-    print(f"scrapeToday - {target_date=}")
+    logger.info(f"scrapeToday - {target_date=}")
 
     await runEnbridgeScrape(target_date)
-    print(f"scrapeToday - runNN_Scrape {target_date=}")
+    logger.info(f"scrapeToday - runNN_Scrape {target_date=}")
 
     await runNN_Scrape(target_date)
 
-    print(f"scrapeToday - metaDump {target_date=}")
+    logger.info(f"scrapeToday - metaDump {target_date=}")
 
-    metaDump()
+    await metaDump()
 
-    print(f"{'*'*15} completed in {time.perf_counter()-start_time: .2f}s {'*'*15}")
+    logger.info(
+        f"{'*'*15} completed in {time.perf_counter()-start_time: .2f}s {'*'*15}")

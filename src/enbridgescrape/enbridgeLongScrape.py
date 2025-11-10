@@ -1,8 +1,9 @@
-import time
+import asyncio
 from datetime import datetime, timedelta
 
 
 from .utils import openPage, code2seg
+from .utils import logger
 from .OprAvail import scrape_OA
 from .OprCap import scrape_OC
 
@@ -45,4 +46,4 @@ async def enbridgeLongRun(pipeCode: str, scrape_date=None, head_less: bool = Tru
         if op_cap:
             await scrape_OC(mainpage=page, iframe=iframe_locator)
 
-        time.sleep(1)
+        await asyncio.sleep(1)

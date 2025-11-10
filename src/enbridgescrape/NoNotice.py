@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 
 
 from .utils import openPage, paths, code2seg
+from .utils import logger
 
 nn_downloads_path = paths.downloads / 'NN'
 nn_downloads_path.mkdir(exist_ok=True, parents=True)
@@ -50,6 +51,7 @@ async def runNN_Scrape(scrape_date=None, head_less: bool = True):
         try:
             await run(pipecode, head_less=head_less, scrape_date=scrape_date)
         except Exception as e:
-            print(f"failed: {pipecode} - {str(e)}")
+            logger.error(f"failed: {pipecode} - {str(e)}")
         finally:
-            print(f"{pipecode} - {time.perf_counter()-start_time: .2f}s {'-'*15} ")
+            logger.info(
+                f"{pipecode} - {time.perf_counter()-start_time: .2f}s {'-'*15} ")

@@ -1,8 +1,9 @@
-import time
+import asyncio
 
 from datetime import datetime, timedelta
 
 from .utils import paths, error_detailed
+from .utils import logger
 
 
 ocap_downloads_path = paths.downloads / 'OC'
@@ -53,9 +54,10 @@ async def refreshDump(mainpage, getByText, scrape_date=None):
 
         await download.save_as(ocap_downloads_path / download.suggested_filename.replace('_OA_', f'_OC-{getByText}_'))
         # print(f"->OC-{getByText}")
-        time.sleep(1)
-    except Exception as e:
-        print(f"Failed ->OC-{getByText}")
+        # time.sleep(1)
+        await asyncio.sleep(1)
+    except Exception:
+        logger.error(f"Failed ->OC LongWay {getByText}")
         # print(error_detailed(e))
 
 
@@ -73,30 +75,43 @@ async def scrape_OC(mainpage, iframe=None, scrape_date=None):
         # print(textList)
 
         if iframe is None:
-            for count, i in enumerate(textList, start=1):
-                child_element = mainpage.get_by_role("link").get_by_text(i)
+            try:
+                for count, i in enumerate(textList, start=1):
 
-                await child_element.highlight()
-                time.sleep(1)
+                    child_element = mainpage.get_by_role("link").get_by_text(i)
 
-                async with mainpage.expect_navigation():
-                    await child_element.click()
+                    await child_element.highlight()
+                    # time.sleep(1)
+                    await asyncio.sleep(1)
 
-                async with mainpage.expect_download() as download_info:
-                    await mainpage.get_by_text("Download Csv").click()
+                    async with mainpage.expect_navigation():
+                        await child_element.click()
 
-                download = await download_info.value
+                    async with mainpage.expect_download() as download_info:
+                        await mainpage.get_by_text("Download Csv").click()
 
-                await download.save_as(ocap_downloads_path / download.suggested_filename.replace('_OA_', f'_OC{count}_'))
-                print(f"->OC{i}", end="\t")
-                time.sleep(1)
+                    download = await download_info.value
 
-                async with mainpage.expect_navigation():
-                    await mainpage.go_back()
+                    await download.save_as(ocap_downloads_path / download.suggested_filename.replace('_OA_', f'_OC{count}_'))
+                    # logger.info(f"->OC{i}")
+                    # time.sleep(1)
+                    await asyncio.sleep(1)
+
+                    async with mainpage.expect_navigation():
+                        await mainpage.go_back()
+            except Exception:
+                # logger.error(f"Failed: in shortcut - {i}")
+                if (i in ['TETLP Lease NJ/NY']):
+                    pass
+                else:
+                    raise Exception(f"Failed: in shortcut - {i}")
+
         else:
             for eleText in textList:
                 await refreshDump(mainpage=mainpage, getByText=eleText, scrape_date=scrape_date)
-                time.sleep(1)
+                # time.sleep(1)
+                await asyncio.sleep(1)
 
-    except Exception as e:
-        print(error_detailed(e))
+    except Exception:
+        # logger.error(error_detailed(e))
+        raise Exception("Failed: in shortcut")

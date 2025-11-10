@@ -9,6 +9,7 @@ class Paths:
     src = root / 'src'
     archive = root / 'archive'
     downloads = root / 'downloads' / 'enbridge'
+    logs = root / 'logs'
 
     base = src / 'enbridgescrape'
 

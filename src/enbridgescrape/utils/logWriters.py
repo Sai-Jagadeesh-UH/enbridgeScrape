@@ -30,7 +30,7 @@ success_handler.setFormatter(formatter)
 # B. Handler for error messages (ERROR level and up)
 error_handler = logging.FileHandler(ERROR_FILE)
 # Crucially, set this handler's level to ERROR
-error_handler.setLevel(logging.ERROR)
+error_handler.setLevel(logging.CRITICAL)
 error_handler.setFormatter(formatter)
 
 # C. Optional: Console Handler for real-time monitoring

@@ -49,11 +49,15 @@ async def enbridgeRun(pipecode: str, scrape_date=None, head_less: bool = True):
 
             # time.sleep(1)
             await asyncio.sleep(1)
-    except Exception:
+    except Exception as e:
         logger.warning(
-            f"failed : enbridgeRun-{pipecode}{scrape_date} - trying long way {'*'*10}")
+            f"""failed : enbridgeRun-{pipecode=} {scrape_date=} - trying long way {'*'*10}
+            - {error_detailed(e)} """)
         try:
             await enbridgeLongRun(pipecode, head_less=head_less, scrape_date=scrape_date)
         except Exception as e:
             logger.error(
-                f"failed: enbridgeLongRun {pipecode} - {error_detailed(e)}")
+                f"""failed: enbridgeLongRun {pipecode=} {scrape_date=} {'!'*10}
+                - {error_detailed(e)}""")
+            logger.critical(
+                f"""failed: enbridgeLongRun {pipecode=} {scrape_date=} {'!'*10}""")

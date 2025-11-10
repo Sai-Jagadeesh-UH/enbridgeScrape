@@ -11,6 +11,8 @@ ocap_downloads_path.mkdir(exist_ok=True, parents=True)
 
 
 async def refreshDump(mainpage, getByText, scrape_date=None):
+    target_date = scrape_date if scrape_date else (
+        datetime.now() - timedelta(days=2))
     try:
         await mainpage.reload()
 
@@ -26,9 +28,6 @@ async def refreshDump(mainpage, getByText, scrape_date=None):
             .get_by_role("textbox")
             .nth(0)
         )
-
-        target_date = scrape_date if scrape_date else (
-            datetime.now() - timedelta(days=2))
 
         # print(f"{target_date=} - {scrape_date=}")
 
@@ -56,8 +55,9 @@ async def refreshDump(mainpage, getByText, scrape_date=None):
         # print(f"->OC-{getByText}")
         # time.sleep(1)
         await asyncio.sleep(1)
-    except Exception:
-        logger.error(f"Failed ->OC LongWay {getByText}")
+    except Exception as e:
+        logger.error(f"""failed: OC LongWay {getByText=} {target_date=}
+                     - {error_detailed(e)}""")
         # print(error_detailed(e))
 
 
@@ -99,12 +99,13 @@ async def scrape_OC(mainpage, iframe=None, scrape_date=None):
 
                     async with mainpage.expect_navigation():
                         await mainpage.go_back()
-            except Exception:
+            except Exception as e:
                 # logger.error(f"Failed: in shortcut - {i}")
                 if (i in ['TETLP Lease NJ/NY']):
                     pass
                 else:
-                    raise Exception(f"Failed: in shortcut - {i}")
+                    raise Exception(f"""Failed: in shortcut - {i=} {scrape_date=}
+                                    - {error_detailed(e)}""")
 
         else:
             for eleText in textList:

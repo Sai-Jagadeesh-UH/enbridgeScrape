@@ -1,7 +1,0 @@
-Cycle_Desc,Post_Date,Eff_Gas_Day,Cap_Type_Desc,Post_Time,Eff_Time,Loc,Loc_Name,Loc_Zn,Flow_Ind_Desc,Loc_Purp_Desc,Loc_QTI_Desc,Meas_Basis_Desc,IT,All_Qty_Avail,Total_Design_Capacity,Operating_Capacity,Total_Scheduled_Quantity,Operationally_Available_Capacity,TSP_Name,TSP
-INTRDY_2023-02-05_0900,02-05-2023,02-04-2023,Operational Capacity,09:00,09:00,GP001,PEPL MAUMEE,,Receipt,Receipt Location,Receipt Point Quantity,MMBtu,N,Y,"280,000","280,000","66,000","214,000",GPL,36638044
-INTRDY_2023-02-05_0900,02-05-2023,02-04-2023,Operational Capacity,09:00,09:00,GP002,ANR FALLEN TIMBERS,,Receipt,Receipt Location,Receipt Point Quantity,MMBtu,N,Y,"300,000","300,000","134,500","165,500",GPL,36638044
-INTRDY_2023-02-05_0900,02-05-2023,02-04-2023,Operational Capacity,09:00,09:00,GP101,OREGON CLEAN ENERGY PLANT,,Delivery,Delivery Location,Delivery Point Quantity,MMBtu,N,Y,"290,000","290,000","136,620","153,380",GPL,36638044
-INTRDY_2023-02-05_0900,02-05-2023,02-04-2023,Operational Capacity,09:00,09:00,GP102,Interstate Chemical,,Delivery,Delivery Location,Delivery Point Quantity,MMBtu,N,Y,"21,000","21,000","6,435","14,565",GPL,36638044
-INTRDY_2023-02-05_0900,02-05-2023,02-04-2023,Operational Capacity,09:00,09:00,GP103,CLEVELAND CLIFFS,,Delivery,Delivery Location,Delivery Point Quantity,MMBtu,N,Y,"81,000","81,000","55,721","25,279",GPL,36638044
-

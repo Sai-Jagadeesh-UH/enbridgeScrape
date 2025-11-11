@@ -1,6 +1,0 @@
-Cycle_Desc,Post_Date,Eff_Gas_Day,Cap_Type_Desc,Post_Time,Eff_Time,Loc,Loc_Name,Loc_Zn,Flow_Ind_Desc,Loc_Purp_Desc,Loc_QTI_Desc,Meas_Basis_Desc,IT,All_Qty_Avail,Total_Design_Capacity,Operating_Capacity,Total_Scheduled_Quantity,Operationally_Available_Capacity,TSP_Name,TSP
-INTRDY_2023-02-08_0900,02-08-2023,02-07-2023,Operational Capacity,09:00,09:00,46505,"TE - STECKMAN RIDGE, PA (R46605/D46606)",,Receipt,Receipt Location,Receipt Point Quantity,MMBtu,N,Y,"300,000","300,000","16,279","283,721",SR,827593182
-INTRDY_2023-02-08_0900,02-08-2023,02-07-2023,Operational Capacity,09:00,09:00,46505,"TE - STECKMAN RIDGE, PA (R46605/D46606)",,Delivery,Delivery Location,Delivery Point Quantity,MMBtu,N,Y,"300,000","300,000","55,260","244,740",SR,827593182
-INTRDY_2023-02-08_0900,02-08-2023,02-07-2023,Operational Capacity,09:00,09:00,47000,DOMINION - STECKMAN RIDGE,,Delivery,Delivery Location,Delivery Point Quantity,MMBtu,N,Y,"219,864","219,864",0,"219,864",SR,827593182
-INTRDY_2023-02-08_0900,02-08-2023,02-07-2023,Operational Capacity,09:00,09:00,47000,DOMINION - STECKMAN RIDGE,,Receipt,Receipt Location,Receipt Point Quantity,MMBtu,N,Y,"219,864","219,864",0,"219,864",SR,827593182
-

@@ -12,9 +12,8 @@ ocap_downloads_path.mkdir(exist_ok=True, parents=True)
 
 async def refreshDump(pipecode: str, mainpage, getByText: str, scrape_date: datetime):
 
-    # today or past else D-2 day
-    target_date = scrape_date if (scrape_date and scrape_date <= datetime.today())else (
-        datetime.now() - timedelta(days=2))
+    # today or past else D day
+    target_date = scrape_date if scrape_date <= datetime.today() else datetime.now()
 
     try:
         await mainpage.goto(
@@ -54,7 +53,7 @@ async def refreshDump(pipecode: str, mainpage, getByText: str, scrape_date: date
 
         download = await download_info.value
 
-        await download.save_as(ocap_downloads_path / download.suggested_filename.replace('_OA_', f'_OC-{getByText}_'))
+        await download.save_as(ocap_downloads_path / download.suggested_filename.replace('_OA_', f'_OC-{getByText.replace('/', '')}_'))
 
         await asyncio.sleep(1)
 
@@ -84,12 +83,13 @@ async def scrape_OC(mainpage, pipecode: str, scrape_date: datetime, iframe=None,
 
         for count, eleText in enumerate(textList, start=1):
             try:
-                if (iframe is None):
+                if (iframe is not None):
+                    # kick it iteractice scrape
                     raise ValueError("longway detected")
-                child_element = page.get_by_role(
-                    "link").get_by_text(eleText)
 
-                await child_element.highlight()
+                child_element = page.get_by_role("link").get_by_text(eleText)
+
+                # await child_element.highlight()
                 # time.sleep(1)
                 await asyncio.sleep(1)
 

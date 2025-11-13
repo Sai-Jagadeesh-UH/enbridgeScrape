@@ -26,9 +26,8 @@ async def enbridgeLongRun(pipeCode: str, scrape_date: datetime, head_less: bool 
             .get_by_role("textbox")
             .nth(0)
         )
-
-        target_date = scrape_date if scrape_date else (
-            datetime.now() - timedelta(days=2))
+        # past date ensured
+        target_date = scrape_date if scrape_date <= datetime.today() else datetime.today()
 
         await date_box.fill("")
         for i in range(10):
@@ -38,6 +37,7 @@ async def enbridgeLongRun(pipeCode: str, scrape_date: datetime, head_less: bool 
 
         await page.keyboard.press("Enter")
 
+        # OA failure is handled & logged by caller
         if 'OA' in code2seg[pipeCode]:
             await scrape_OA(page=page, iframe=iframe_locator)
 

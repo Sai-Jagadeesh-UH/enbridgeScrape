@@ -11,13 +11,14 @@ from .enbridgeLongScrape import enbridgeLongRun
 
 async def enbridgeRun(pipecode: str, scrape_date: datetime, head_less: bool = True):
 
-    # today or past else D-2 day
-    target_date = scrape_date if (scrape_date and scrape_date <= datetime.today())else (
-        datetime.now() - timedelta(days=2))
+    # today or past else D day
+    target_date = scrape_date if scrape_date <= datetime.today() else datetime.now()
 
     try:
         if (pipecode in ['MNUS']):
             raise ValueError("MNUS - going Long Way")
+
+        # try short way
         async with openPage(headLess=head_less) as page:
             await page.goto(
                 f"https://rtba.enbridge.com/InformationalPosting/Default.aspx?bu={pipecode}&Type=OA"
@@ -38,20 +39,19 @@ async def enbridgeRun(pipecode: str, scrape_date: datetime, head_less: bool = Tr
 
             await page.keyboard.press("Enter")
 
-            # check if OA faild
+            # check if OA fails immediated kick in long way
 
             if 'OA' in code2seg[pipecode]:
                 await scrape_OA(page=page)
 
-                # print(f"->{pipecode} - OA {target_date}")
-
+            # check it OC is present
             op_cap = page.get_by_text("Operational Capacity Maps")
 
             if (op_cap):
                 await scrape_OC(mainpage=page, pipecode=pipecode, scrape_date=target_date)
 
-            # time.sleep(1)
             await asyncio.sleep(1)
+
     except Exception as e:
         logger.warning(
             f"""failed : enbridgeRun-{pipecode=} {scrape_date=} - trying long way {'*'*10}

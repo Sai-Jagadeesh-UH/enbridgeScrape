@@ -10,6 +10,8 @@ from .utils import logger
 
 async def runEnbridgeScrape(scrape_date: datetime, head_less: bool = True):
     start_time = time.perf_counter()
+
+    # multithreaded/AIO of all pipes
     async with asyncio.TaskGroup() as group:
         for pipecode in code2seg.keys():
             group.create_task(enbridgeRun(

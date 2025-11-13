@@ -26,7 +26,7 @@ def runScrape(target_date: datetime):
 
 async def scrapeHistoric(startDate: datetime = datetime.today() - timedelta(days=365*3 + 1)):
 
-    listDates = [startDate+timedelta(days=i) for i in range(0, 50)]
+    listDates = [startDate+timedelta(days=i) for i in range(0, 100)]
     with concurrent.futures.ProcessPoolExecutor(max_workers=None) as executor:
         # Submit all dates to the executor
         # executor.map is simple for applying one function to many inputs

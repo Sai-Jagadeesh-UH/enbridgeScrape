@@ -9,41 +9,46 @@ nn_downloads_path = paths.downloads / 'NN'
 nn_downloads_path.mkdir(exist_ok=True, parents=True)
 
 
-async def run(pipecode: str, scrape_date: datetime | None = datetime.today(), head_less: bool = True):
-    async with openPage(headLess=head_less) as page:
-        await page.goto(
-            rf"https://rtba.enbridge.com/InformationalPosting/Default.aspx?bu={pipecode}&Type=NN"
-        )
+async def run(pipecode: str, scrape_date: datetime, head_less: bool = True):
+    target_date = scrape_date if (scrape_date and scrape_date <= datetime.today() - timedelta(days=4)) else (
+        datetime.now() - timedelta(days=4))
+    try:
+        async with openPage(headLess=head_less) as page:
+            await page.goto(
+                rf"https://rtba.enbridge.com/InformationalPosting/Default.aspx?bu={pipecode}&Type=NN"
+            )
 
-        date_box = (
-            page.get_by_text("Gas Date: ")
-            .locator("xpath=./following-sibling::div")
-            .get_by_role("textbox")
-            .nth(0)
-        )
+            date_box = (
+                page.get_by_text("Gas Date: ")
+                .locator("xpath=./following-sibling::div")
+                .get_by_role("textbox")
+                .nth(0)
+            )
 
-        target_date = scrape_date if (scrape_date and scrape_date <= datetime.today() - timedelta(days=4)) else (
-            datetime.now() - timedelta(days=4))
+            if date_box:
+                await date_box.fill("")
+                for i in range(10):
+                    await page.keyboard.press("Backspace", delay=100)
 
-        if date_box:
-            await date_box.fill("")
-            for i in range(10):
-                await page.keyboard.press("Backspace", delay=100)
+                await date_box.fill((target_date).strftime("%m/%d/%Y"))
 
-            await date_box.fill((target_date).strftime("%m/%d/%Y"))
+                await page.keyboard.press("Enter")
 
-            await page.keyboard.press("Enter")
+            async with page.expect_download() as download_info:
+                await page.get_by_role("link", name="Downloadable Format").click()
 
-        async with page.expect_download() as download_info:
-            await page.get_by_role("link", name="Downloadable Format").click()
+            download = await download_info.value
 
-        download = await download_info.value
+            await download.save_as(nn_downloads_path / download.suggested_filename)
 
-        await download.save_as(nn_downloads_path / download.suggested_filename)
-        print(f"{' '*5}->{pipecode} - NN {target_date}")
+    except Exception as e:
+        logger.critical(
+            f"{pipecode} | NN | initFailure | {target_date.strftime("%Y/%m/%d")}")
+        logger.error(f"""{pipecode} | NN | initFailure | {target_date.strftime("%Y/%m/%d")}
+                     - {error_detailed(e)}""")
 
 
-async def runNN_Scrape(scrape_date=None, head_less: bool = True):
+async def runNN_Scrape(scrape_date: datetime, head_less: bool = True):
 
     NN_List = [i for i in code2seg if 'NN' in code2seg[i]]
     for pipecode in NN_List:

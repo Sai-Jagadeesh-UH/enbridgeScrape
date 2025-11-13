@@ -21,6 +21,6 @@ if __name__ == "__main__":
     # asyncio.run(runNN_Scrape(scrape_date=datetime.today() - timedelta(days=6)))
 
     # asyncio.run(scrapeToday())
-    asyncio.run(scrapeHistoric())
-    # asyncio.run(metaDump())
+    # asyncio.run(scrapeHistoric())
+    asyncio.run(metaDump())
     print(f"{'*'*15} completed in {time.perf_counter()-start_time: .2f}s {'*'*15}")

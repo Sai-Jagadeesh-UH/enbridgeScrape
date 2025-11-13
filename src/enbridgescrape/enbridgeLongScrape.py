@@ -3,12 +3,12 @@ from datetime import datetime, timedelta
 
 
 from .utils import openPage, code2seg
-from .utils import logger
+# from .utils import logger
 from .OprAvail import scrape_OA
 from .OprCap import scrape_OC
 
 
-async def enbridgeLongRun(pipeCode: str, scrape_date=None, head_less: bool = True):
+async def enbridgeLongRun(pipeCode: str, scrape_date: datetime, head_less: bool = True, Only_OA: bool = False):
     async with openPage(headLess=head_less) as page:
         await page.goto(
             f"https://infopost.enbridge.com/InfoPost/{pipeCode}Home.asp?Pipe={pipeCode}"
@@ -41,9 +41,8 @@ async def enbridgeLongRun(pipeCode: str, scrape_date=None, head_less: bool = Tru
         if 'OA' in code2seg[pipeCode]:
             await scrape_OA(page=page, iframe=iframe_locator)
 
-        op_cap = iframe_locator.get_by_text("Operational Capacity Maps")
-
-        if op_cap:
-            await scrape_OC(mainpage=page, iframe=iframe_locator)
-
-        await asyncio.sleep(1)
+        if not Only_OA:
+            op_cap = iframe_locator.get_by_text("Operational Capacity Maps")
+            if op_cap:
+                await scrape_OC(pipecode=pipeCode, mainpage=page, iframe=iframe_locator, scrape_date=scrape_date)
+            await asyncio.sleep(1)

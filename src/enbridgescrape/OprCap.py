@@ -10,11 +10,16 @@ ocap_downloads_path = paths.downloads / 'OC'
 ocap_downloads_path.mkdir(exist_ok=True, parents=True)
 
 
-async def refreshDump(mainpage, getByText, scrape_date=None):
-    target_date = scrape_date if scrape_date else (
+async def refreshDump(pipecode: str, mainpage, getByText: str, scrape_date: datetime):
+
+    # today or past else D-2 day
+    target_date = scrape_date if (scrape_date and scrape_date <= datetime.today())else (
         datetime.now() - timedelta(days=2))
+
     try:
-        await mainpage.reload()
+        await mainpage.goto(
+            f"https://infopost.enbridge.com/InfoPost/{pipecode}Home.asp?Pipe={pipecode}"
+        )
 
         await mainpage.locator("li#Capacity.dropdown.sidebar-menu-item").click()
 
@@ -29,8 +34,6 @@ async def refreshDump(mainpage, getByText, scrape_date=None):
             .nth(0)
         )
 
-        # print(f"{target_date=} - {scrape_date=}")
-
         await date_box.fill("")
         for i in range(10):
             await mainpage.keyboard.press("Backspace", delay=100)
@@ -42,7 +45,7 @@ async def refreshDump(mainpage, getByText, scrape_date=None):
         child_element = iframe_locator.get_by_role(
             "link").get_by_text(getByText)
 
-        await child_element.highlight()
+        # await child_element.highlight()
 
         await child_element.click()
 
@@ -52,67 +55,71 @@ async def refreshDump(mainpage, getByText, scrape_date=None):
         download = await download_info.value
 
         await download.save_as(ocap_downloads_path / download.suggested_filename.replace('_OA_', f'_OC-{getByText}_'))
-        # print(f"->OC-{getByText}")
-        # time.sleep(1)
+
         await asyncio.sleep(1)
+
     except Exception as e:
-        logger.error(f"""failed: OC LongWay {getByText=} {target_date=}
+        logger.critical(
+            f"{pipecode} | OC | {getByText} | {target_date.strftime("%Y/%m/%d")}")
+        logger.error(f"""{pipecode} | OC | {getByText} | {target_date.strftime("%Y/%m/%d")}
                      - {error_detailed(e)}""")
-        # print(error_detailed(e))
 
 
-async def scrape_OC(mainpage, iframe=None, scrape_date=None):
-
+async def scrape_OC(mainpage, pipecode: str, scrape_date: datetime, iframe=None, ):
     try:
+        if iframe is None:
+            page = mainpage
+            frame = mainpage
+        else:
+            page = mainpage
+            frame = iframe
 
         div_items = (
-            mainpage.get_by_text("Operational Capacity Maps")
+            frame.get_by_text("Operational Capacity Maps")
             .locator("xpath=./following-sibling::div")
             .get_by_role("link")
         )
 
         textList = await div_items.all_text_contents()
-        # print(textList)
 
-        if iframe is None:
+        for count, eleText in enumerate(textList, start=1):
             try:
-                for count, i in enumerate(textList, start=1):
+                if (iframe is None):
+                    raise ValueError("longway detected")
+                child_element = page.get_by_role(
+                    "link").get_by_text(eleText)
 
-                    child_element = mainpage.get_by_role("link").get_by_text(i)
-
-                    await child_element.highlight()
-                    # time.sleep(1)
-                    await asyncio.sleep(1)
-
-                    async with mainpage.expect_navigation():
-                        await child_element.click()
-
-                    async with mainpage.expect_download() as download_info:
-                        await mainpage.get_by_text("Download Csv").click()
-
-                    download = await download_info.value
-
-                    await download.save_as(ocap_downloads_path / download.suggested_filename.replace('_OA_', f'_OC{count}_'))
-                    # logger.info(f"->OC{i}")
-                    # time.sleep(1)
-                    await asyncio.sleep(1)
-
-                    async with mainpage.expect_navigation():
-                        await mainpage.go_back()
-            except Exception as e:
-                # logger.error(f"Failed: in shortcut - {i}")
-                if (i in ['TETLP Lease NJ/NY']):
-                    pass
-                else:
-                    raise Exception(f"""Failed: in shortcut - {i=} {scrape_date=}
-                                    - {error_detailed(e)}""")
-
-        else:
-            for eleText in textList:
-                await refreshDump(mainpage=mainpage, getByText=eleText, scrape_date=scrape_date)
+                await child_element.highlight()
                 # time.sleep(1)
                 await asyncio.sleep(1)
 
-    except Exception:
-        # logger.error(error_detailed(e))
-        raise Exception("Failed: in shortcut")
+                async with page.expect_navigation():
+                    await child_element.click()
+
+                async with page.expect_download() as download_info:
+                    await page.get_by_text("Download Csv").click()
+
+                download = await download_info.value
+
+                await download.save_as(ocap_downloads_path / download.suggested_filename.replace('_OA_', f'_OC{count}_'))
+
+                await asyncio.sleep(1)
+
+                async with page.expect_navigation():
+                    await page.go_back()
+
+            except Exception:
+                # logger.error(f"Failed: in shortcut - {i}")
+                if (eleText in ['TETLP Lease NJ/NY']):
+                    pass
+                else:
+                    for eleText in textList[max(0, count-1):]:
+                        # try long path only remaining OC's
+                        await refreshDump(pipecode=pipecode, mainpage=page, getByText=eleText, scrape_date=scrape_date)
+                        await asyncio.sleep(1)
+                    break
+    except Exception as e:
+        logger.critical(
+            f"{pipecode} | OC | initFailure | {scrape_date.strftime("%Y/%m/%d")}")
+        logger.error(f"""{pipecode} | OC | initFailure | {scrape_date.strftime("%Y/%m/%d")}
+                     - {error_detailed(e)}""")

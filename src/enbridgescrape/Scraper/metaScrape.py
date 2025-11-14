@@ -4,8 +4,8 @@ import aiofiles
 import ssl
 import time
 
-from .utils import metacodes, paths
-from .utils import logger
+from ..utils import metacodes, paths
+from ..utils import logger
 
 meta_download_path = paths.downloads / "MetaData"
 meta_download_path.mkdir(exist_ok=True, parents=True)

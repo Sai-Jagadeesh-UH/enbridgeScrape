@@ -2,8 +2,8 @@ import time
 from datetime import datetime, timedelta
 
 
-from .utils import openPage, paths, code2seg, error_detailed
-from .utils import logger
+from ..utils import openPage, paths, code2seg, error_detailed
+from ..utils import logger
 
 nn_downloads_path = paths.downloads / 'NN'
 nn_downloads_path.mkdir(exist_ok=True, parents=True)

@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from src.enbridgescrape import metaDump
 from src.enbridgescrape import runEnbridgeScrape
 from src.enbridgescrape import runNN_Scrape
-from .utils import logger
+from ..utils import logger
 
 
 async def scrapeToday():

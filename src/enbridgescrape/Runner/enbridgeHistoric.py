@@ -7,7 +7,7 @@ import concurrent.futures
 from src.enbridgescrape import runEnbridgeScrape
 from src.enbridgescrape import runNN_Scrape
 
-from .utils import logger
+from ..utils import logger
 
 
 async def dateRunner(target_date: datetime):

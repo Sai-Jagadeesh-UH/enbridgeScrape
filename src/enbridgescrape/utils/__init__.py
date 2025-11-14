@@ -2,7 +2,7 @@ import yaml
 
 from .pathFile import paths
 from .runner import openPage
-from .detLog import error_detailed
+from ...artifacts import error_detailed
 from .logWriters import logger
 
 with open(paths.configs / r"pipeMaps.yml",    "r") as file:

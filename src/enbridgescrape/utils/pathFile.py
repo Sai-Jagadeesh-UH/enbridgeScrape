@@ -1,20 +1,20 @@
-from pathlib import Path
 from dataclasses import dataclass
+from ...artifacts import dirs
 
 
 @dataclass
 class Paths:
-    root = Path('.').resolve()
+    root = dirs.root
+    src = dirs.src
+    logs = dirs.logs
+    models = dirs.models
 
-    src = root / 'src'
-    archive = root / 'archive'
-    downloads = root / 'downloads' / 'enbridge'
-    logs = root / 'logs'
+    downloads = dirs.downloads / 'enbridge'
 
     base = src / 'enbridgescrape'
-
     configs = base / 'configs'
-    utils = base / 'utils'
+
+    dbFile = models / "EnbridgeMeta.db"
 
 
 paths = Paths()

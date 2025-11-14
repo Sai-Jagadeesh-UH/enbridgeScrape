@@ -3,9 +3,9 @@ import asyncio
 
 from datetime import datetime
 from .enbridgeScrape import enbridgeRun
-from .utils import code2seg
+from ..utils import code2seg
 # from .enbridgeLongScrape import enbridgeLongRun
-from .utils import logger
+from ..utils import logger
 
 
 async def runEnbridgeScrape(scrape_date: datetime, head_less: bool = True):

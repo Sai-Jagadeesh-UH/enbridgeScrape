@@ -9,8 +9,10 @@ wheels/
 
 # Virtual environments
 .venv
-archive/
+.vscode
+archives/
 downloads/
+logs/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

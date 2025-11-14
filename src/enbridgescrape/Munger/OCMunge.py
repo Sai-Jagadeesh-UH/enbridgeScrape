@@ -3,7 +3,7 @@ from datetime import date
 import polars as pl
 import pandas as pd
 
-from .utils import paths
+from ..utils import paths
 
 OC_path = paths.downloads / 'OC'
 

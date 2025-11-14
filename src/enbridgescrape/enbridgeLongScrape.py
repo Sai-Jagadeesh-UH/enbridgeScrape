@@ -16,7 +16,7 @@ async def enbridgeLongRun(pipeCode: str, scrape_date: datetime, head_less: bool 
 
         await page.locator("li#Capacity.dropdown.sidebar-menu-item").click()
 
-        await page.get_by_role("link", name="Operationally Available").click()
+        await page.get_by_role("link", name="Operationally Available").nth(0).click()
 
         iframe_locator = page.frame_locator("#ContentPaneIframe")
 

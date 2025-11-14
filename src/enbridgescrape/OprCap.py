@@ -22,7 +22,7 @@ async def refreshDump(pipecode: str, mainpage, getByText: str, scrape_date: date
 
         await mainpage.locator("li#Capacity.dropdown.sidebar-menu-item").click()
 
-        await mainpage.get_by_role("link", name="Operationally Available").click()
+        await mainpage.get_by_role("link", name="Operationally Available").nth(0).click()
 
         iframe_locator = mainpage.frame_locator("#ContentPaneIframe")
 

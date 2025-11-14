@@ -1,5 +1,5 @@
 from .utils import paths
-# from .utils import logger
+from .utils import logger, error_detailed
 
 oa_downloads_path = paths.downloads / 'OA'
 oa_downloads_path.mkdir(exist_ok=True, parents=True)
@@ -19,5 +19,6 @@ async def scrape_OA(page, iframe=None):
         download = await download_info.value
 
         await download.save_as(oa_downloads_path / download.suggested_filename)
-    except Exception:
+    except Exception as e:
+        logger.error(f"OA failed {error_detailed(e)}")
         raise ValueError("OA failed ")

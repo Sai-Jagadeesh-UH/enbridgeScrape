@@ -13,6 +13,7 @@ wheels/
 archives/
 downloads/
 logs/
+*.env
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

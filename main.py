@@ -3,9 +3,10 @@ import asyncio
 import time
 from datetime import datetime, timedelta
 
-from src.artifacts import dirs, getTableData
+# from src.artifacts import dirs
+# , getTableData
 
-# from enbridgescrape import metaDump
+from enbridgescrape import Persister
 # from src.enbridgescrape import runEnbridgeScrape
 # from src.enbridgescrape import scrapeHistoric, scrapeToday
 # from src.enbridgescrape import runNN_Scrape
@@ -27,5 +28,6 @@ if __name__ == "__main__":
     # asyncio.run(scrapeToday())
     # asyncio.run(scrapeHistoric())
     # asyncio.run(metaDump())
-    getTableData(tableName='Chekcing')
+    # getTableData(tableName='Chekcing')
+
     print(f"{'*'*15} completed in {time.perf_counter()-start_time: .2f}s {'*'*15}")

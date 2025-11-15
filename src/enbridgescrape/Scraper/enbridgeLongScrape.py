@@ -1,11 +1,11 @@
 import asyncio
-from datetime import datetime, timedelta
-
+from datetime import datetime
 
 from ..utils import openPage, code2seg
 # from .utils import logger
-from ..OprAvail import scrape_OA
-from ..OprCap import scrape_OC
+
+from .OprAvail import scrape_OA
+from .OprCap import scrape_OC
 
 
 async def enbridgeLongRun(pipeCode: str, scrape_date: datetime, head_less: bool = True, Only_OA: bool = False):

@@ -1,11 +1,11 @@
 import asyncio
-from datetime import datetime, timedelta
+from datetime import datetime
 
 
 from ..utils import openPage, code2seg, error_detailed
 from ..utils import logger
-from ..OprAvail import scrape_OA
-from ..OprCap import scrape_OC
+from .OprAvail import scrape_OA
+from .OprCap import scrape_OC
 from .enbridgeLongScrape import enbridgeLongRun
 
 

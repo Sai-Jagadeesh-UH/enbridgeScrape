@@ -5,6 +5,7 @@ import operator
 import polars as pl
 
 from ..utils import paths
+from src.artifacts import getPipes
 
 OA_path = paths.downloads / 'OA'
 selectedCols = ['Cycle_Desc', 'Eff_Gas_Day', 'Loc', 'Loc_Name', 'Loc_Zn', 'Flow_Ind_Desc', 'Loc_Purp_Desc', 'IT', 'All_Qty_Avail',
@@ -13,6 +14,10 @@ selectedCols = ['Cycle_Desc', 'Eff_Gas_Day', 'Loc', 'Loc_Name', 'Loc_Zn', 'Flow_
 
 def batchDateParse(inSeries: pl.Series) -> pl.Series:
     return pl.Series(map(lambda inString: datetime.strptime(inString, "%m-%d-%Y").date(), inSeries))
+
+
+def paddedString(inSeries: pl.Series) -> pl.Series:
+    return pl.Series(map(lambda inString: str(inString).rjust(6, '0'), inSeries))
 
 
 def batchFloatParse(inSeries: pl.Series) -> pl.Series:
@@ -29,7 +34,7 @@ def batchFIMapper(inSeries: pl.Series) -> pl.Series:
     return pl.Series(map(lambda inString: flow_Map.get(inString, 'D'), inSeries))
 
 
-def formatOA():
+def formatOA() -> pl.DataFrame:
     df = pl.scan_csv(OA_path / "*_OA_*.csv",
                      glob=True,
                      has_header=True,
@@ -37,7 +42,7 @@ def formatOA():
         .select([*selectedCols, 'TSP'])\
         .filter(
         ~functools.reduce(
-            operator.or_,
+            operator.and_,
             map(lambda col: pl.col(col).is_null(), selectedCols)
         ))
 
@@ -58,7 +63,9 @@ def formatOA():
         pl.lit(None).cast(pl.String).alias('QtyReason'),
         pl.lit(datetime.now()).cast(
             pl.Datetime).alias('Timestamp'),
-        pl.col("TSP").cast(pl.String),
+        pl.col("TSP").cast(pl.Int64),
+        pl.col("Loc").cast(pl.String).map_batches(
+            paddedString, return_dtype=pl.String).alias('PaddedLoc'),
     )\
         .rename({
             'Cycle_Desc': 'CycleDesc',
@@ -95,5 +102,5 @@ def formatOA():
             # 'GFLOC',
             'TSP'
         ]).collect()
-
+    # df.write_csv(paths.models / 'OA_Processed.csv')
     return df

@@ -4,8 +4,8 @@ from .Scraper import metaDump, runNN_Scrape, runEnbridgeScrape
 
 from .Runner import scrapeToday, scrapeHistoric
 
-# from .Munge.OAMunge import formatOA
+from .Munger import formatOA, formatOC
 from .utils import paths
 
 __all__ = ["metaDump", "runNN_Scrape", "runEnbridgeScrape",
-           "scrapeToday", "scrapeHistoric",  "paths"]
+           "scrapeToday", "scrapeHistoric",  "paths", 'formatOA', 'formatOC']

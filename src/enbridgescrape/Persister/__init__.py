@@ -1,9 +1,9 @@
-import asyncio
+# import asyncio
 
 import duckdb
 
 from .handleMeta import metaMunge
-from ..Scraper import metaDump
+# from ..Scraper import metaDump
 from ..utils import paths
 
 metaPath = paths.downloads / 'MetaData'
@@ -11,11 +11,6 @@ metaPath = paths.downloads / 'MetaData'
 dbFile = paths.dbFile
 
 ParentPipe = 'Enbridge'
-
-
-asyncio.run(metaDump())
-
-metaMunge()
 
 
 with duckdb.connect(paths.dbFile) as con:

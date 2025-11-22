@@ -4,13 +4,15 @@ from datetime import datetime, timedelta
 from src.enbridgescrape import metaDump
 from src.enbridgescrape import runEnbridgeScrape
 from src.enbridgescrape import runNN_Scrape
-from ..Persister import metaMunge
 from ..Munger import formatOA
 from ..utils import logger
 
 
 async def scrapeToday():
     start_time = time.perf_counter()
+
+    await metaDump()
+
     #  Yesterday
     target_date = datetime.today() - timedelta(days=1)
     logger.info(f"scrapeToday - {target_date=}")
@@ -29,9 +31,6 @@ async def scrapeToday():
 
     #  today (latest MetaData)
     logger.info(f"scrapeToday - metaDump {target_date=}")
-    await metaDump()
-
-    metaMunge()
 
     formatOA()
 

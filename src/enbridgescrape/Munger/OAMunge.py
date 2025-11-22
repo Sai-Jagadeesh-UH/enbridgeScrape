@@ -5,11 +5,19 @@ import operator
 import polars as pl
 
 from ..utils import paths
-from src.artifacts import getPipes
+from src.artifacts import getPipes, updatePipes
+
+ParentPipe = 'Enbridge'
 
 OA_path = paths.downloads / 'OA'
+
 selectedCols = ['Cycle_Desc', 'Eff_Gas_Day', 'Loc', 'Loc_Name', 'Loc_Zn', 'Flow_Ind_Desc', 'Loc_Purp_Desc', 'IT', 'All_Qty_Avail',
                 'Total_Design_Capacity', 'Operating_Capacity', 'Total_Scheduled_Quantity', 'Operationally_Available_Capacity']
+
+
+def saveFile(df: pl.DataFrame) -> None:
+    df.write_csv(paths.models /
+                 f'OA_Processed{datetime.now().strftime("%d%m%Y%H%M%S")}.csv')
 
 
 def batchDateParse(inSeries: pl.Series) -> pl.Series:
@@ -34,12 +42,12 @@ def batchFIMapper(inSeries: pl.Series) -> pl.Series:
     return pl.Series(map(lambda inString: flow_Map.get(inString, 'D'), inSeries))
 
 
-def formatOA() -> pl.DataFrame:
+def formatOA():
     df = pl.scan_csv(OA_path / "*_OA_*.csv",
                      glob=True,
                      has_header=True,
                      )\
-        .select([*selectedCols, 'TSP'])\
+        .select([*selectedCols, 'TSP', 'TSP_Name'])\
         .filter(
         ~functools.reduce(
             operator.and_,
@@ -80,27 +88,46 @@ def formatOA() -> pl.DataFrame:
             'Total_Scheduled_Quantity': 'TotalScheduledQuantity',
             'Operationally_Available_Capacity': 'OperationallyAvailableCapacity',
             # 'TSP_Name': 'PipelineName'
-        })\
-        .select([
-            'EffGasDayTime',
-            # 'PipelineName',
-            'CycleDesc',
-            'LocPurpDesc',
-            'Loc',
-            'LocName',
-            'LocZn',
-            'LocSegment',
-            'DesignCapacity',
-            'OperatingCapacity',
-            'TotalScheduledQuantity',
-            'OperationallyAvailableCapacity',
-            'IT',
-            'FlowInd',
-            'AllQtyAvail',
-            'QtyReason',
-            'Timestamp',
-            # 'GFLOC',
-            'TSP'
-        ]).collect()
+        })
+
+    # .collect()
+
+    updatePipes(df=df.select(['TSP', 'TSP_Name']
+                             ).collect().unique(keep='first'), parentPipeName=ParentPipe)
+
+    df = df.join(pl.LazyFrame(getPipes(parentPipeName=ParentPipe)[['GFPipeID', 'TSP']]), on='TSP', how='inner')\
+        .with_columns(
+            pl.col('GFPipeID').cast(pl.String),
+            pl.col('Loc').map_batches(paddedString,
+                                      return_dtype=pl.String).alias('tempLoc')
+    )\
+        .with_columns(
+            pl.concat_str([pl.col('GFPipeID'),
+                           pl.lit("OA"),
+                           pl.col('tempLoc'),
+                           pl.col('FlowInd')], separator='').alias('GFLOC')
+    ).select([
+        'GFLOC',
+        'LocPurpDesc',
+        'Loc',
+        'LocName',
+        'LocZn',
+        'IT',
+        'FlowInd',
+        'LocSegment',
+        'DesignCapacity',
+        'OperatingCapacity',
+        'TotalScheduledQuantity',
+        'OperationallyAvailableCapacity',
+        'AllQtyAvail',
+        'QtyReason',
+        'Timestamp',
+        'TSP',
+        'EffGasDayTime',
+        # 'TSP_Name',
+        'CycleDesc'
+    ])
+
+    saveFile(df.collect())
     # df.write_csv(paths.models / 'OA_Processed.csv')
-    return df
+    # return df.collect()

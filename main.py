@@ -2,7 +2,7 @@ import os
 import asyncio
 import time
 from datetime import datetime, timedelta
-from src.enbridgescrape import scrapeToday
+from src.enbridgescrape import scrapeToday, metaDump, formatOA, scrapeHistoric
 
 # from src.artifacts import dirs
 # , getTableData
@@ -26,9 +26,9 @@ if __name__ == "__main__":
     # asyncio.run(runEnbridgeScrape(True))
     # asyncio.run(runNN_Scrape(scrape_date=datetime.today() - timedelta(days=6)))
     # print(f"{os.getenv("DELTA_STORAGE_KEY")}")
-    asyncio.run(scrapeToday())
-    # asyncio.run(scrapeHistoric())
+    # asyncio.run(scrapeToday())
+    asyncio.run(scrapeHistoric())
     # asyncio.run(metaDump())
     # getTableData(tableName='Chekcing')
-
+    # formatOA()
     print(f"{'*'*15} completed in {time.perf_counter()-start_time: .2f}s {'*'*15}")

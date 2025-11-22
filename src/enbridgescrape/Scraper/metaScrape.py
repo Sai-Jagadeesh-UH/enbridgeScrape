@@ -6,6 +6,7 @@ import time
 
 from ..utils import metacodes, paths
 from ..utils import logger
+from ..Persister import metaMunge
 
 meta_download_path = paths.downloads / "MetaData"
 meta_download_path.mkdir(exist_ok=True, parents=True)
@@ -34,18 +35,7 @@ async def metaDump():
             local_filename = meta_download_path / f"{pipe_code}AllPoints.csv"
             group.create_task(runDump(file_url, local_filename))
 
-        # try:
-        #     response = requests.get(file_url, stream=True)
-        #     response.raise_for_status()  # Check for HTTP errors
-
-        #     with open(local_filename, 'wb') as local_file:
-        #         for chunk in response.iter_content(chunk_size=8192):
-        #             if chunk:
-        #                 local_file.write(chunk)
-        #     # print(f"File '{local_filename}' downloaded successfully.")
-
-        # except requests.exceptions.RequestException as e:
-        #     print(f"failed: metaDump {pipe_code} -  {e}")
+    metaMunge()
 
     logger.info(
         f"metaDump completed in {time.perf_counter()-start_time: .2f}s  {'-'*10}")

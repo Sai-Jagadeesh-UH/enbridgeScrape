@@ -8,8 +8,11 @@ async def openPage(headLess: bool = True, slow_mo: int = 100):
     async with async_playwright() as playwright:
         chromium = playwright.chromium
         browser = await chromium.launch(headless=headLess, slow_mo=100)
+
         try:
             page = await browser.new_page()
+            # page.set_default_navigation_timeout(10000)
+            # page.set_default_timeout(20000)
             yield page
         finally:
             await browser.close()

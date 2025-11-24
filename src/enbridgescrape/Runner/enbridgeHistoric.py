@@ -19,24 +19,24 @@ async def dateRunner(target_date: datetime):
         group.create_task(runNN_Scrape(target_date))
 
 
-# def runScrape(target_date: datetime):
-#     start_time = time.perf_counter()
-#     logger.info(f"{target_date} Process kicking in!!!")
-#     asyncio.run(dateRunner(target_date))
-#     logger.info(
-#         f"{target_date} scrape completed in {time.perf_counter()-start_time: .2f}s {'*'*15}")
+def runScrape(target_date: datetime):
+    start_time = time.perf_counter()
+    logger.info(f"{target_date} Process kicking in!!!")
+    asyncio.run(dateRunner(target_date))
+    logger.info(
+        f"{target_date} scrape completed in {time.perf_counter()-start_time: .2f}s {'*'*15}")
 
 
 async def scrapeHistoric(startDate: datetime = datetime.today() - timedelta(days=365*3 + 1)):
     await metaDump()
 
     for dayRange in range(0, 150):
-        # listDates = [startDate+timedelta(days=i) for i in range(
-        #     dayRange, dayRange + 50) if startDate+timedelta(days=i) <= datetime.today()]
-        # with concurrent.futures.ProcessPoolExecutor(max_workers=None) as executor:
-        # Submit all dates to the executor
-        # executor.map is simple for applying one function to many inputs
-        # executor.map(runScrape, listDates)
-        await dateRunner(startDate+timedelta(days=dayRange))
+        listDates = [startDate+timedelta(days=i) for i in range(
+            dayRange, dayRange + 50) if startDate+timedelta(days=i) <= datetime.today()]
+        with concurrent.futures.ProcessPoolExecutor(max_workers=None) as executor:
+            # Submit all dates to the executor
+            # executor.map is simple for applying one function to many inputs
+            executor.map(runScrape, listDates)
+        # await dateRunner(startDate+timedelta(days=dayRange))
 
-        formatOA()
+    formatOA()

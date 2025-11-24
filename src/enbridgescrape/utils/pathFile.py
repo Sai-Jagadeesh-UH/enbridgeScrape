@@ -16,6 +16,7 @@ class Paths:
     base = src / 'enbridgescrape'
     configs = base / 'configs'
     dbFile = models / "EnbridgeMeta.db"
+    dbName = "EnbridgeMeta.db"
 
 
 paths = Paths()

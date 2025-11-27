@@ -57,10 +57,6 @@ def updatePipes(df: pd.DataFrame | pl.DataFrame, parentPipeName: str) -> None:
 
         with conect_db() as con:
 
-            # cur = conn.cursor()
-
-            # 1. Write the DataFrame to a temporary staging table
-            #    If the table exists, replace it with the new data
             df.to_sql('stg_GFPipes', con, if_exists='replace', index=False)
 
             con.execute("""
@@ -78,17 +74,6 @@ def updatePipes(df: pd.DataFrame | pl.DataFrame, parentPipeName: str) -> None:
                 );
             """, (parentPipeName,))
 
-            # 2. Perform the UPSERT from the staging table to the main table using a single statement
-            #    ON CONFLICT (TSP) DO NOTHING means if a row with the same TSP already exists, do nothing
-            # con.execute(f"""
-            #     INSERT INTO GFPipes_table (TSP, TSP_Name, ParentPipe)
-            #     SELECT TSP, TSP_Name, '{parentPipeName}'
-            #     FROM stg_GFPipes
-            #     WHERE true
-            #     ON CONFLICT(TSP) DO NOTHING;
-            # """)
-
-            # 3. Drop the staging table after the operation is complete
             con.execute("DROP TABLE stg_GFPipes;")
 
         # upsertTable(entityFrame=getPipes().to_pandas(), tableName='GFPipes')
@@ -113,12 +98,3 @@ def getPipes(parentPipeName: str | None = None) -> pl.DataFrame:
 
         return pl.DataFrame(data=con.execute(QueryStr).fetchall(),
                             schema=['GFPipeID', 'TSP', 'TSP_Name', 'ParentPipe'], orient="row")
-        # .select(['GFPipeID', 'TSP', 'TSP_Name', 'ParentPipe'])
-
-    # Install and load the SQLite extension (autoloaded on first use, but explicit is clear)
-    # duck_con.install_extension("sqlite") # Only needs to be run once per environment
-    # duck_con.load_extension("sqlite")
-
-    # Attach the SQLite database file to DuckDB
-    # The 'sqlite:' prefix or 'TYPE sqlite' specifies the extension
-    # duck_con.execute(f"ATTACH '{db_path}' AS sqlite_db (TYPE sqlite);")

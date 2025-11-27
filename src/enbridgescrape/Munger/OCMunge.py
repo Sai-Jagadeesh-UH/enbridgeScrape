@@ -1,4 +1,6 @@
 from datetime import date
+import glob
+import os
 
 import polars as pl
 import pandas as pd
@@ -7,11 +9,11 @@ from ..utils import paths
 
 OC_path = paths.downloads / 'OC'
 
-ALL_OC_Files = [i for i in OC_path.rglob("*_OC*.csv")]
+# ALL_OC_Files = [i for i in OC_path.rglob("*_OC*.csv")]
 
 
 def parseDate(dateString: str) -> date:
-    return date(year=int(dateString[:4]), month=int(dateString[4:6]), day=int(dateString[6:]))
+    return date(year=int(dateString[:4]), month=int(dateString[5:7]), day=int(dateString[8:]))
 
 
 def batchTDMapper(inSeries: pl.Series) -> pl.Series:
@@ -38,16 +40,31 @@ def batchAbsolute(inSeries: pl.Series) -> pl.Series:
 
 
 def getConcatDf() -> pd.DataFrame:
-    framesList = []
-    for index, filePath in enumerate(ALL_OC_Files):
-        temp = ALL_OC_Files[0].name.split('_')
-        tempDf = pd.read_csv(filePath, header=1, usecols=[0, 1, 2, 3])
-        tempDf['pipeCode'] = temp[0]
-        tempDf['EffDate'] = parseDate(temp[2])
 
-        framesList.append(tempDf)
+    orderdList = []
+    for filename in glob.glob(str(OC_path / "*.csv")):
+        with open(filename) as file:
+            orderdList.append((filename, file.readline().split('  ')[0][10:]))
 
-    return pd.concat(framesList).drop_duplicates()
+    combined_df_concise = pd.concat([
+        pd.read_csv(item[0], usecols=['Station Name', 'Cap',
+                    'Nom', 'Cap2'], skiprows=1).assign(EffGasDayTime=item[1])
+        for item in orderdList], ignore_index=True).drop_duplicates(keep='first')
+
+    combined_df_concise['EffGasDayTime'] = combined_df_concise['EffGasDayTime'].apply(
+        parseDate)
+    # parseDate(temp[2])
+
+    # framesList = []
+    # for index, filePath in enumerate(ALL_OC_Files):
+    #     temp = ALL_OC_Files[0].name.split('_')
+    #     tempDf = pd.read_csv(filePath, header=1, usecols=[0, 1, 2, 3])
+    #     tempDf['pipeCode'] = temp[0]
+    #     tempDf['EffDate'] = parseDate(temp[2])
+
+    #     framesList.append(tempDf)
+
+    return combined_df_concise
 
 
 def formatOC() -> pl.DataFrame:

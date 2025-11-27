@@ -11,6 +11,8 @@ class Paths:
     logs = root / 'logs'
     downloads = root / 'downloads' / 'enbridge'
 
+    processed = downloads / 'processed'
+
     artifacts = src / 'artifacts'
     models = src / 'Models'
     base = src / 'enbridgescrape'

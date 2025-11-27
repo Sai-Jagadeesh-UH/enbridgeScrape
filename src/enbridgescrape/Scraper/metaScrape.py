@@ -6,7 +6,8 @@ import time
 
 from ..utils import metacodes, paths
 from ..utils import logger
-from ..Persister import metaMunge
+from ..Munger import metaMunge
+
 
 meta_download_path = paths.downloads / "MetaData"
 meta_download_path.mkdir(exist_ok=True, parents=True)
@@ -32,7 +33,7 @@ async def metaDump():
     async with asyncio.TaskGroup() as group:
         for pipe_code in metacodes:
             file_url = f"https://linkwc.enbridge.com/Pointdata/{pipe_code}AllPoints.csv"
-            local_filename = meta_download_path / f"{pipe_code}AllPoints.csv"
+            local_filename = meta_download_path / f"{pipe_code}_AllPoints.csv"
             group.create_task(runDump(file_url, local_filename))
 
     metaMunge()

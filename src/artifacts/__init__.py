@@ -1,4 +1,4 @@
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 
 from .dirsFile import dirs
 from .ModelKeeper import updatePipes, getPipes, conect_db

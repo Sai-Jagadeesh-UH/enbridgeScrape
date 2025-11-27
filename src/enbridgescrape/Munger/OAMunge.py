@@ -5,6 +5,7 @@ import operator
 import polars as pl
 
 from ..utils import paths
+from .MungeAll import processOA
 from src.artifacts import getPipes, updatePipes
 
 ParentPipe = 'Enbridge'
@@ -43,11 +44,14 @@ def batchFIMapper(inSeries: pl.Series) -> pl.Series:
 
 
 def formatOA():
+
+    processOA()
+
     df = pl.scan_csv(OA_path / "*_OA_*.csv",
                      glob=True,
                      has_header=True,
                      )\
-        .select([*selectedCols, 'TSP', 'TSP_Name'])\
+        .select([*selectedCols, 'TSP_Name', 'PipeCode'])\
         .filter(
         ~functools.reduce(
             operator.and_,
@@ -71,7 +75,7 @@ def formatOA():
         pl.lit(None).cast(pl.String).alias('QtyReason'),
         pl.lit(datetime.now()).cast(
             pl.Datetime).alias('Timestamp'),
-        pl.col("TSP").cast(pl.Int64),
+        # pl.col("TSP").cast(pl.String),
         pl.col("Loc").cast(pl.String).map_batches(
             paddedString, return_dtype=pl.String).alias('PaddedLoc'),
     )\
@@ -92,10 +96,10 @@ def formatOA():
 
     # .collect()
 
-    updatePipes(df=df.select(['TSP', 'TSP_Name']
-                             ).collect().unique(keep='first'), parentPipeName=ParentPipe)
+    updatePipes(df=df.select(['PipeCode', 'TSP_Name']
+                             ).collect().unique(subset=['PipeCode'], keep='first'), parentPipeName=ParentPipe)
 
-    df = df.join(pl.LazyFrame(getPipes(parentPipeName=ParentPipe)[['GFPipeID', 'TSP']]), on='TSP', how='inner')\
+    df = df.join(pl.LazyFrame(getPipes(parentPipeName=ParentPipe)[['GFPipeID', 'PipeCode']]), on='PipeCode', how='inner')\
         .with_columns(
             pl.col('GFPipeID').cast(pl.String),
             pl.col('Loc').map_batches(paddedString,
@@ -122,9 +126,11 @@ def formatOA():
         'AllQtyAvail',
         'QtyReason',
         'Timestamp',
-        'TSP',
+        # 'TSP',
+        'GFPipeID',
         'EffGasDayTime',
-        # 'TSP_Name',
+        'TSP_Name',
+        'PipeCode',
         'CycleDesc'
     ])
 

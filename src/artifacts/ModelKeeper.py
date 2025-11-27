@@ -3,7 +3,7 @@ import sqlite3
 import contextlib
 
 from .dirsFile import dirs
-from .push2Cloud import upsertTable
+# from .push2Cloud import upsertTable
 from .detLog import error_detailed
 import pandas as pd
 import polars as pl
@@ -40,8 +40,8 @@ with conect_db() as conn:
     conn.execute("""
     CREATE TABLE IF NOT EXISTS GFPipes_table (
         GFPipeID INTEGER PRIMARY KEY AUTOINCREMENT,
-        TSP INTEGER UNIQUE NOT NULL,
-        TSP_Name VARCHAR UNIQUE NOT NULL,
+        PipeCode VARCHAR UNIQUE NOT NULL,
+        TSP_Name VARCHAR NOT NULL,
         ParentPipe VARCHAR 
     );
     """)
@@ -60,9 +60,9 @@ def updatePipes(df: pd.DataFrame | pl.DataFrame, parentPipeName: str) -> None:
             df.to_sql('stg_GFPipes', con, if_exists='replace', index=False)
 
             con.execute("""
-                INSERT INTO GFPipes_table (TSP, TSP_Name, ParentPipe)
+                INSERT INTO GFPipes_table (PipeCode, TSP_Name, ParentPipe)
                 SELECT 
-                    stg.TSP, 
+                    stg.PipeCode, 
                     stg.TSP_Name, 
                     ? AS ParentPipeValue
                 FROM 
@@ -70,7 +70,7 @@ def updatePipes(df: pd.DataFrame | pl.DataFrame, parentPipeName: str) -> None:
                 WHERE NOT EXISTS (
                     SELECT 1
                     FROM GFPipes_table AS final
-                    WHERE final.TSP = stg.TSP
+                    WHERE final.PipeCode = stg.PipeCode
                 );
             """, (parentPipeName,))
 
@@ -97,4 +97,4 @@ def getPipes(parentPipeName: str | None = None) -> pl.DataFrame:
         con.execute(f"ATTACH '{dbFile}' AS sqlite_db (TYPE sqlite);")
 
         return pl.DataFrame(data=con.execute(QueryStr).fetchall(),
-                            schema=['GFPipeID', 'TSP', 'TSP_Name', 'ParentPipe'], orient="row")
+                            schema=['GFPipeID', 'PipeCode', 'TSP_Name', 'ParentPipe'], orient="row")

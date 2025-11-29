@@ -22,7 +22,7 @@ def getTable(tableName: str):
 
 
 def dumpTable(tableName: str):
-
+    return
     with getTable(tableName) as table_client:
         try:
             table_client.query_entities("")
@@ -33,6 +33,7 @@ def dumpTable(tableName: str):
 
 
 def upsertTable(entityFrame: pd.DataFrame, tableName: str):
+    return
     if tableName == 'GFPipes':
         entityFrame['PartitionKey'] = 'MetaData'
         entityFrame['RowKey'] = entityFrame['GFPipeID'].astype(

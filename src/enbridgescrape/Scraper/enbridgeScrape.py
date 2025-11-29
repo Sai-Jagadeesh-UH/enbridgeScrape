@@ -1,9 +1,8 @@
 import asyncio
 from datetime import datetime
 
-
-from ..utils import openPage, code2seg, error_detailed
-from ..utils import logger
+from ..utils import openPage, error_detailed
+from ..utils import logger, pipeConfigs_df
 from .OprAvail import scrape_OA
 from .OprCap import scrape_OC
 from .enbridgeLongScrape import enbridgeLongRun
@@ -40,17 +39,19 @@ async def enbridgeRun(pipecode: str, scrape_date: datetime, head_less: bool = Tr
             await page.keyboard.press("Enter")
 
             # check if OA fails immediated kick in long way
-
-            if 'OA' in code2seg[pipecode]:
+            if pipeConfigs_df.loc[pipeConfigs_df['PipeCode'] == pipecode, ['PointCapCode']].values[0][0]:
+                # if 'OA' in code2seg[pipecode]:
                 await scrape_OA(page=page)
 
             # check it OC is present
-            op_cap = page.get_by_text("Operational Capacity Maps")
+            if pipeConfigs_df.loc[pipeConfigs_df['PipeCode'] == pipecode, ['SegmentCapCode']].values[0][0]:
 
-            if (op_cap):
-                await scrape_OC(mainpage=page, pipecode=pipecode, scrape_date=target_date)
+                op_cap = page.get_by_text("Operational Capacity Maps")
 
-            await asyncio.sleep(1)
+                if (op_cap):
+                    await scrape_OC(mainpage=page, pipecode=pipecode, scrape_date=target_date)
+
+                await asyncio.sleep(1)
 
     except Exception as e:
         logger.warning(

@@ -1,11 +1,15 @@
-# from dotenv import load_dotenv
+from dotenv import load_dotenv
 
 from .dirsFile import dirs
-from .ModelKeeper import updatePipes, getPipes, conect_db
 from .detLog import error_detailed
+from .azureDump import dumpPipeConfigs
+from .BaseLogWriters import baseLogger
 
 
-# load_dotenv(dirs.artifacts / '.env')
+load_dotenv(dirs.root / 'archives/.env')
 
 
-__all__ = ["dirs", 'updatePipes', 'getPipes', 'error_detailed', 'conect_db']
+dumpPipeConfigs()
+
+
+__all__ = ["dirs", 'error_detailed', 'baseLogger']

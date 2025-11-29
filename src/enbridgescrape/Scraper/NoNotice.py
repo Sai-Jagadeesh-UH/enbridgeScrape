@@ -1,8 +1,7 @@
 import time
 from datetime import datetime, timedelta
 
-
-from ..utils import openPage, paths, code2seg, error_detailed
+from ..utils import openPage, paths, error_detailed, pipeConfigs_df
 from ..utils import logger
 
 nn_downloads_path = paths.downloads / 'NN'
@@ -50,7 +49,9 @@ async def run(pipecode: str, scrape_date: datetime, head_less: bool = True):
 
 async def runNN_Scrape(scrape_date: datetime, head_less: bool = True):
 
-    NN_List = [i for i in code2seg if 'NN' in code2seg[i]]
+    # NN_List = [i for i in code2seg if 'NN' in code2seg[i]]
+    NN_List = list(pipeConfigs_df['NoNoticeCode'].dropna())
+
     for pipecode in NN_List:
         start_time = time.perf_counter()
         try:

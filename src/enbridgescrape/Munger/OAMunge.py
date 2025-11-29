@@ -4,9 +4,9 @@ import functools
 import operator
 import polars as pl
 
-from ..utils import paths
+from ..utils import paths, pipeConfigs_df
 from .MungeAll import processOA
-from src.artifacts import getPipes, updatePipes
+# from src.artifacts import getPipes, updatePipes
 
 ParentPipe = 'Enbridge'
 
@@ -17,7 +17,7 @@ selectedCols = ['Cycle_Desc', 'Eff_Gas_Day', 'Loc', 'Loc_Name', 'Loc_Zn', 'Flow_
 
 
 def saveFile(df: pl.DataFrame) -> None:
-    df.write_csv(paths.models /
+    df.write_csv(paths.processed /
                  f'OA_Processed{datetime.now().strftime("%d%m%Y%H%M%S")}.csv')
 
 
@@ -96,10 +96,10 @@ def formatOA():
 
     # .collect()
 
-    updatePipes(df=df.select(['PipeCode', 'TSP_Name']
-                             ).collect().unique(subset=['PipeCode'], keep='first'), parentPipeName=ParentPipe)
+    # updatePipes(df=df.select(['PipeCode', 'TSP_Name']
+    #                          ).collect().unique(subset=['PipeCode'], keep='first'), parentPipeName=ParentPipe)
 
-    df = df.join(pl.LazyFrame(getPipes(parentPipeName=ParentPipe)[['GFPipeID', 'PipeCode']]), on='PipeCode', how='inner')\
+    df = df.join(pl.LazyFrame(pipeConfigs_df.loc[pipeConfigs_df['ParentPipe'] == ParentPipe, ['GFPipeID', 'PipeCode']]), on='PipeCode', how='inner')\
         .with_columns(
             pl.col('GFPipeID').cast(pl.String),
             pl.col('Loc').map_batches(paddedString,

@@ -14,11 +14,15 @@ class Paths:
     processed = downloads / 'processed'
 
     artifacts = src / 'artifacts'
-    models = src / 'Models'
     base = src / 'enbridgescrape'
-    configs = base / 'configs'
-    dbFile = models / "EnbridgeMeta.db"
-    dbName = "EnbridgeMeta.db"
+
+    # models = src / 'Models'
+    # configs = base / 'configs'
+    # dbFile = models / "EnbridgeMeta.db"
+    # dbName = "EnbridgeMeta.db"
 
 
 paths = Paths()
+
+paths.logs.mkdir(exist_ok=True, parents=True)
+paths.downloads.mkdir(exist_ok=True, parents=True)

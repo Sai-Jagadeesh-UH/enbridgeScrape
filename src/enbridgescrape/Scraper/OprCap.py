@@ -53,7 +53,7 @@ async def refreshDump(pipecode: str, mainpage, getByText: str, scrape_date: date
 
         download = await download_info.value
 
-        await download.save_as(ocap_downloads_path / download.suggested_filename.replace('_OA_', f'_OC-{getByText.replace('/', '')}_'))
+        await download.save_as(ocap_downloads_path / download.suggested_filename.replace('_OA_', f'_OC_{getByText.replace('/', '')}_'))
 
         await asyncio.sleep(1)
 

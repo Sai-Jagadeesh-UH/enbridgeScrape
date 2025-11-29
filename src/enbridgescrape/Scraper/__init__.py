@@ -6,4 +6,4 @@ from .enbridgeLongScrape import enbridgeLongRun
 
 
 __all__ = ['metaDump', 'runNN_Scrape', 'runEnbridgeScrape',
-           'enbridgeRun', 'runEnbridgeScrape', 'enbridgeLongRun']
+           'enbridgeRun', 'enbridgeLongRun']

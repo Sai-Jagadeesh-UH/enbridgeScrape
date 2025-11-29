@@ -165,5 +165,5 @@ def formatOC() -> pl.DataFrame:
     return pl.concat(lazyList, how="vertical").with_columns(
         pl.col('OpCap').map_batches(batchAbsolute, return_dtype=pl.Float64),
         pl.col('Nom').map_batches(batchAbsolute, return_dtype=pl.Float64),
-        pl.col('Nom').map_batches(batchDateParse, return_dtype=pl.Date),
+        pl.col('EffGasDate').map_batches(batchDateParse, return_dtype=pl.Date),
     ).collect()

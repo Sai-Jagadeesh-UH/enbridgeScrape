@@ -4,7 +4,7 @@ import aiofiles
 import ssl
 import time
 
-from ..utils import metacodes, paths
+from ..utils import paths, pipeConfigs_df
 from ..utils import logger
 from ..Munger import metaMunge
 
@@ -31,9 +31,12 @@ async def runDump(file_url, local_filename):
 async def metaDump():
     start_time = time.perf_counter()
     async with asyncio.TaskGroup() as group:
-        for pipe_code in metacodes:
-            file_url = f"https://linkwc.enbridge.com/Pointdata/{pipe_code}AllPoints.csv"
-            local_filename = meta_download_path / f"{pipe_code}_AllPoints.csv"
+        # for pipe_code in metacodes:
+        for pipe_meta_code in pipeConfigs_df['MetaCode'].dropna(ignore_index=True).to_list():
+            pipeCode = pipeConfigs_df\
+                .loc[pipeConfigs_df['MetaCode'] == pipe_meta_code, ['PipeCode']].values[0][0]
+            file_url = f"https://linkwc.enbridge.com/Pointdata/{pipe_meta_code}AllPoints.csv"
+            local_filename = meta_download_path / f"{pipeCode}_AllPoints.csv"
             group.create_task(runDump(file_url, local_filename))
 
     metaMunge()

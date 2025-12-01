@@ -12,7 +12,7 @@ async def enbridgeRun(pipecode: str, scrape_date: datetime, head_less: bool = Tr
 
     # today or past else D day
     target_date = scrape_date if scrape_date <= datetime.today() else datetime.now()
-
+    # logger.critical(f"{pipecode} scrape started")
     try:
         if (pipecode in ['MNUS']):
             raise ValueError("MNUS - going Long Way")

@@ -14,7 +14,8 @@ async def runEnbridgeScrape(scrape_date: datetime, head_less: bool = True):
     # multithreaded/AIO of all pipes
     async with asyncio.TaskGroup() as group:
         # for pipecode in code2seg.keys():
-        for pipecode in pipeConfigs_df['PipeCode'].unique():
+        for pipecode in pipeConfigs_df.dropna(how='all', subset=['PointCapCode', 'SegmentCapCode'])['PipeCode']:
+            # logger.critical(f"{pipecode} - initiated")
             group.create_task(enbridgeRun(
                 pipecode=pipecode, head_less=head_less, scrape_date=scrape_date))
     logger.info(f"{' '*8} {time.perf_counter()-start_time: .2f}s {'-'*15} ")

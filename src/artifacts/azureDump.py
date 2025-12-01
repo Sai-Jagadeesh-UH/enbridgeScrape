@@ -21,7 +21,7 @@ def getTable(tableName: str):
 
 
 def dumpPipeConfigs():
-    baseLogger.critical("Dumping PipeConfigs from Azure Table Storage")
+    baseLogger.error("Dumping PipeConfigs from Azure Table Storage")
     with getTable('PipeConfigs') as table_client:
         df = pd.DataFrame(table_client.query_entities("", select=[
                           'ParentPipe', 'PipeName', 'GFPipeID', 'PipeCode', 'MetaCode', 'PointCapCode', 'SegmentCapCode', 'NoNoticeCode']))

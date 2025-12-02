@@ -7,7 +7,7 @@ from src.enbridgescrape import runNN_Scrape
 
 from ..Munger import formatOA, formatOC
 from ..utils import logger
-from ..cloudPush import pushRawOA, pushRawOC, pushRawNN, pushRawLogs
+from ..cloudPush import pushEnbridge
 
 
 async def scrapeToday():
@@ -35,14 +35,11 @@ async def scrapeToday():
     #  today (latest MetaData)
     logger.info(f"scrapeToday - metaDump {target_date=}")
 
-    await pushRawOA()
-    await pushRawOC()
-    await pushRawNN()
-    await pushRawLogs()
+    await pushEnbridge()
 
-    formatOA()
+    # formatOA()
 
-    formatOC()
+    # formatOC()
 
     logger.info(
         f"{'*'*15} completed in {time.perf_counter()-start_time: .2f}s {'*'*15}")

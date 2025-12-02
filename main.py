@@ -1,11 +1,14 @@
 # import os
 import asyncio
 import time
+# from pathlib import Path
 from src.artifacts import baseLogger
 # from datetime import datetime, timedelta
 # from src.artifacts import dirs
 from src.enbridgescrape import scrapeToday
-from src.enbridgescrape import scrapeHistoric
+# from src.enbridgescrape import scrapeHistoric
+# from src.enbridgescrape.cloudPush.handleSilver import cleanseOC
+# from src.enbridgescrape.cloudPush import pushSilverOA
 # from src.enbridgescrape.cloudPush import pushRawOA, pushRawOC, pushRawNN, pushRawMeta, pushRawLogs
 # from src.enbridgescrape import  metaDump, formatOA, scrapeHistoric
 
@@ -62,6 +65,9 @@ if __name__ == "__main__":
 
     # getTableData(tableName='Chekcing')
     # formatOA()
+
+    # asyncio.run(
+    #     cleanseOC(Path('AG_OC1_20251201_INTRDY_2025-12-02_0900.parquet')))
 
     print(f"{'*'*15} All completed in {time.perf_counter()-start_time: .2f}s {'*'*15}")
     baseLogger.info(

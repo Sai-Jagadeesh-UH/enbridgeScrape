@@ -1,10 +1,9 @@
 import pandas as pd
 
-from src.artifacts import error_detailed, dirs
+from src.artifacts import error_detailed, dirs, openPage
 # dumpPipeConfigs
 
 from .pathFile import paths
-from .runnerContext import openPage
 from .logWriters import logger
 
 # if not (dirs.configFiles / 'PipeConfigs.parquet').exists():

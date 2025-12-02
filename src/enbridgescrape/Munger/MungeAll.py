@@ -22,14 +22,16 @@ def processMeta():
 
 
 def processOA():
+    return
     for filePath in (paths.downloads / 'OA_raw').iterdir():
         pipeCode = filePath.name.split('_', 2)[0]
         pd.read_csv(filePath)\
             .assign(PipeCode=pipeCode)\
-            .to_csv(paths.downloads / "OA" / filePath.name, index=False, header=True)
+            .to_parquet(paths.downloads / "OA" / filePath.name.replace('.csv', '.parquet'), index=False)
 
 
 def processOC():
+    return
     for filePath in (paths.downloads / 'OC_raw').iterdir():
         pipeCode = filePath.name.split('_', 2)[0]
         with open(filePath) as file:
@@ -43,3 +45,18 @@ def processOC():
                 .to_csv(paths.downloads / "OC" / filePath.name, index=False, header=True)
         except Exception as e:
             print(f"Error processing {filePath.name}: {e}")
+
+
+def processNN():
+    # downloads/enbridge/NN_raw/AG_NN_20251128.csv
+
+    for filePath in (paths.downloads / 'NN_raw').iterdir():
+        try:
+            pipeCode, _, EffGasDayTime = filePath.name.split('_', 2)
+            pd.read_csv(filePath)\
+                .assign(PipeCode=pipeCode)\
+                .to_parquet(paths.downloads / "NN" / filePath.name.replace('.csv', '.parquet'), index=False)
+
+        except Exception as e:
+            print(f"Error processing {filePath.name}: {e}")
+            continue

@@ -2,7 +2,7 @@ from contextlib import asynccontextmanager
 
 from playwright.async_api import async_playwright
 
-from .logWriters import logger
+from .BaseLogWriters import baseLogger
 from src.artifacts import error_detailed
 
 
@@ -18,6 +18,6 @@ async def openPage(headLess: bool = True, slow_mo: int = 100):
             # page.set_default_timeout(20000)
             yield page
         except Exception as e:
-            logger.error(f"Error in contextManager: {error_detailed(e)}")
+            baseLogger.error(f"Error in contextManager: {error_detailed(e)}")
         finally:
             await browser.close()

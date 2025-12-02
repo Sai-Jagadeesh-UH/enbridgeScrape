@@ -9,7 +9,7 @@ from src.enbridgescrape import runEnbridgeScrape
 from src.enbridgescrape import runNN_Scrape
 
 from ..Munger import formatOA, formatOC
-from ..cloudPush import pushRawOA, pushRawOC, pushRawNN, pushRawLogs
+from ..cloudPush import pushEnbridge
 from ..utils import logger
 
 
@@ -39,10 +39,11 @@ async def scrapeHistoric(startDate: datetime = datetime.today() - timedelta(days
             executor.map(runScrape, listDates)
         # await dateRunner(startDate+timedelta(days=dayRange))
 
-    await pushRawOA()
-    await pushRawOC()
-    await pushRawNN()
-    await pushRawLogs()
+    await pushEnbridge()
+    # await pushRawOA()
+    # await pushRawOC()
+    # await pushRawNN()
+    # await pushRawLogs()
 
-    formatOA()
-    formatOC()
+    # formatOA()
+    # formatOC()

@@ -13,8 +13,8 @@ timestamp = datetime.today().strftime("%Y%m%d")
 LOG_DIR = paths.logs
 LOG_DIR.mkdir(exist_ok=True, parents=True)
 
-SUCCESS_FILE = LOG_DIR / f"Enbridge_success_{timestamp}.log"
-ERROR_FILE = LOG_DIR / f"Enbridge_error_{timestamp}.log"
+SUCCESS_FILE = LOG_DIR / f"Enbridge_success_{timestamp}.txt"
+ERROR_FILE = LOG_DIR / f"Enbridge_error_{timestamp}.txt"
 
 
 # 2. Define a common formatter

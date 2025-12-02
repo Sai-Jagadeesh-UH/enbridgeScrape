@@ -7,9 +7,9 @@ import concurrent.futures
 from src.enbridgescrape import metaDump
 from src.enbridgescrape import runEnbridgeScrape
 from src.enbridgescrape import runNN_Scrape
-from ..Munger import formatOA
 
-
+from ..Munger import formatOA, formatOC
+from ..cloudPush import pushRawOA, pushRawOC, pushRawNN, pushRawLogs
 from ..utils import logger
 
 
@@ -30,13 +30,19 @@ def runScrape(target_date: datetime):
 async def scrapeHistoric(startDate: datetime = datetime.today() - timedelta(days=365*3 + 1)):
     await metaDump()
 
-    for dayRange in range(0, 150):
+    for dayRange in range(0, 300, 100):
         listDates = [startDate+timedelta(days=i) for i in range(
-            dayRange, dayRange + 50) if startDate+timedelta(days=i) <= datetime.today()]
+            dayRange, dayRange + 100) if startDate+timedelta(days=i) <= datetime.today()]
         with concurrent.futures.ProcessPoolExecutor(max_workers=None) as executor:
             # Submit all dates to the executor
             # executor.map is simple for applying one function to many inputs
             executor.map(runScrape, listDates)
         # await dateRunner(startDate+timedelta(days=dayRange))
 
+    await pushRawOA()
+    await pushRawOC()
+    await pushRawNN()
+    await pushRawLogs()
+
     formatOA()
+    formatOC()

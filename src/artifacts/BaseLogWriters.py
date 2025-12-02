@@ -9,7 +9,7 @@ timestamp = datetime.today().strftime("%Y%m%d")
 LOG_DIR = dirs.logs
 LOG_DIR.mkdir(exist_ok=True, parents=True)
 
-ERROR_FILE = LOG_DIR / f"Error_{timestamp}.log"
+ERROR_FILE = LOG_DIR / f"Error_{timestamp}.txt"
 
 formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 

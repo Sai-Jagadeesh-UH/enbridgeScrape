@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from ..utils import openPage, paths, error_detailed, pipeConfigs_df
 from ..utils import logger
 
-nn_downloads_path = paths.downloads / 'NN'
+nn_downloads_path = paths.downloads / 'NN_raw'
 nn_downloads_path.mkdir(exist_ok=True, parents=True)
 
 

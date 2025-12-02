@@ -6,6 +6,9 @@ from ..utils import paths
 
 processed_Path = paths.processed
 paths.processed.mkdir(exist_ok=True, parents=True)
+(paths.downloads / "OA").mkdir(exist_ok=True, parents=True)
+(paths.downloads / "OC").mkdir(exist_ok=True, parents=True)
+(paths.downloads / "NN").mkdir(exist_ok=True, parents=True)
 
 
 def processMeta():
@@ -19,15 +22,15 @@ def processMeta():
 
 
 def processOA():
-    for filePath in (paths.downloads / "OA").iterdir():
+    for filePath in (paths.downloads / 'OA_raw').iterdir():
         pipeCode = filePath.name.split('_', 2)[0]
         pd.read_csv(filePath)\
             .assign(PipeCode=pipeCode)\
-            .to_csv(filePath, index=False, header=True)
+            .to_csv(paths.downloads / "OA" / filePath.name, index=False, header=True)
 
 
 def processOC():
-    for filePath in (paths.downloads / "OC").iterdir():
+    for filePath in (paths.downloads / 'OC_raw').iterdir():
         pipeCode = filePath.name.split('_', 2)[0]
         with open(filePath) as file:
             EffGasDayTime = file.readline().split('  ')[0][10:]
@@ -37,6 +40,6 @@ def processOC():
                         usecols=['Station Name', 'Cap', 'Nom', 'Cap2'])\
                 .assign(PipeCode=pipeCode)\
                 .assign(EffGasDate=EffGasDayTime)[['PipeCode', 'EffGasDate', 'Station Name', 'Cap', 'Nom', 'Cap2']]\
-                .to_csv(filePath, index=False, header=True)
+                .to_csv(paths.downloads / "OC" / filePath.name, index=False, header=True)
         except Exception as e:
             print(f"Error processing {filePath.name}: {e}")

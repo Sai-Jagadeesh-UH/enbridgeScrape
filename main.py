@@ -1,9 +1,12 @@
 # import os
 import asyncio
 import time
+from src.artifacts import baseLogger
 # from datetime import datetime, timedelta
 # from src.artifacts import dirs
 from src.enbridgescrape import scrapeToday
+from src.enbridgescrape import scrapeHistoric
+# from src.enbridgescrape.cloudPush import pushRawOA, pushRawOC, pushRawNN, pushRawMeta, pushRawLogs
 # from src.enbridgescrape import  metaDump, formatOA, scrapeHistoric
 
 
@@ -31,6 +34,35 @@ if __name__ == "__main__":
     asyncio.run(scrapeToday())
     # asyncio.run(scrapeHistoric())
     # asyncio.run(metaDump())
+
+    # start__time = time.perf_counter()
+    # asyncio.run(pushRawOA())
+    # baseLogger.info(
+    #     f"{'*'*15} OA completed in {time.perf_counter()-start__time: .2f}s {'*'*15}")
+
+    # start__time = time.perf_counter()
+    # asyncio.run(pushRawOC())
+    # baseLogger.info(
+    #     f"{'*'*15} OC completed in {time.perf_counter()-start__time: .2f}s {'*'*15}")
+
+    # start__time = time.perf_counter()
+    # asyncio.run(pushRawNN())
+    # baseLogger.info(
+    #     f"{'*'*15} NN completed in {time.perf_counter()-start__time: .2f}s {'*'*15}")
+
+    # start__time = time.perf_counter()
+    # asyncio.run(pushRawMeta())
+    # baseLogger.info(
+    #     f"{'*'*15} Meta completed in {time.perf_counter()-start__time: .2f}s {'*'*15}")
+
+    # start__time = time.perf_counter()
+    # asyncio.run(pushRawLogs())
+    # baseLogger.info(
+    #     f"{'*'*15} Logs completed in {time.perf_counter()-start__time: .2f}s {'*'*15}")
+
     # getTableData(tableName='Chekcing')
     # formatOA()
-    print(f"{'*'*15} completed in {time.perf_counter()-start_time: .2f}s {'*'*15}")
+
+    print(f"{'*'*15} All completed in {time.perf_counter()-start_time: .2f}s {'*'*15}")
+    baseLogger.info(
+        f"{'*'*15} All completed in {time.perf_counter()-start_time: .2f}s {'*'*15}")

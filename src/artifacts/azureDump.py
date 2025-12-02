@@ -11,7 +11,7 @@ from .dirsFile import dirs
 
 @contextmanager
 def getTable(tableName: str):
-    deltaConstr = os.getenv('DELTA_STORAGE_CONSTR', '')
+    deltaConstr = os.getenv('PROD_STORAGE_CONSTR', '')
     try:
         with TableServiceClient.from_connection_string(conn_str=deltaConstr) as client:
             yield client.create_table_if_not_exists(table_name=tableName)
@@ -21,14 +21,15 @@ def getTable(tableName: str):
 
 
 def dumpPipeConfigs():
-    baseLogger.error("Dumping PipeConfigs from Azure Table Storage")
-    with getTable('PipeConfigs') as table_client:
-        df = pd.DataFrame(table_client.query_entities("", select=[
-                          'ParentPipe', 'PipeName', 'GFPipeID', 'PipeCode', 'MetaCode', 'PointCapCode', 'SegmentCapCode', 'NoNoticeCode']))
-        try:
-            df['GFPipeID'] = df['GFPipeID'].apply(lambda x: x.value)
-            df.to_parquet(dirs.configFiles /
-                          'PipeConfigs.parquet', index=False)
-        except Exception as e:
-            baseLogger.critical(
-                f"There was an error dumping PipeConfigs - {error_detailed(e)}")
+    if not (dirs.configFiles / 'PipeConfigs.parquet').exists():
+        baseLogger.error("Dumping PipeConfigs from Azure Table Storage")
+        with getTable('PipeConfigs') as table_client:
+            df = pd.DataFrame(table_client.query_entities("", select=[
+                'ParentPipe', 'PipeName', 'GFPipeID', 'PipeCode', 'MetaCode', 'PointCapCode', 'SegmentCapCode', 'NoNoticeCode']))
+            try:
+                df['GFPipeID'] = df['GFPipeID'].apply(lambda x: x.value)
+                df.to_parquet(dirs.configFiles /
+                              'PipeConfigs.parquet', index=False)
+            except Exception as e:
+                baseLogger.critical(
+                    f"There was an error dumping PipeConfigs - {error_detailed(e)}")

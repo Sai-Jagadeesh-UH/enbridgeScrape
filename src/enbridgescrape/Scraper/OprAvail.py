@@ -2,7 +2,7 @@
 from ..utils import paths
 from ..utils import logger, error_detailed
 
-oa_downloads_path = paths.downloads / 'OA'
+oa_downloads_path = paths.downloads / 'OA_raw'
 oa_downloads_path.mkdir(exist_ok=True, parents=True)
 
 

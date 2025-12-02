@@ -4,8 +4,10 @@ from datetime import datetime, timedelta
 from src.enbridgescrape import metaDump
 from src.enbridgescrape import runEnbridgeScrape
 from src.enbridgescrape import runNN_Scrape
+
 from ..Munger import formatOA, formatOC
 from ..utils import logger
+from ..cloudPush import pushRawOA, pushRawOC, pushRawNN, pushRawLogs
 
 
 async def scrapeToday():
@@ -32,6 +34,11 @@ async def scrapeToday():
 
     #  today (latest MetaData)
     logger.info(f"scrapeToday - metaDump {target_date=}")
+
+    await pushRawOA()
+    await pushRawOC()
+    await pushRawNN()
+    await pushRawLogs()
 
     formatOA()
 

@@ -15,6 +15,11 @@ async def runEnbridgeScrape(scrape_date: datetime, head_less: bool = True):
     async with asyncio.TaskGroup() as group:
         # for pipecode in code2seg.keys():
         for pipecode in pipeConfigs_df.dropna(how='all', subset=['PointCapCode', 'SegmentCapCode'])['PipeCode']:
+
+            # skip WE before Oct 1 2025 Not Available
+            if (pipecode == 'WE' and scrape_date < datetime(2025, 10, 1)):
+                continue
+
             # logger.critical(f"{pipecode} - initiated")
             group.create_task(enbridgeRun(
                 pipecode=pipecode, head_less=head_less, scrape_date=scrape_date))
